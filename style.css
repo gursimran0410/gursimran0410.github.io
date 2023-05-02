@@ -1,0 +1,144 @@
+:root {
+    --subtle-color: #892561;
+    --font-color: #FFFFFF;
+    --html-font-color: #515152;
+    --background-color: #f3f1f0;
+    --spacing-xxl: 48px;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    text-rendering: geometricPrecision;
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    background: var(--background-color);
+}
+
+.header-wrapper {
+    position: fixed;
+    top: 0;
+    padding-top: var(--spacing-xxl);
+    z-index: 9;
+    width: 100%
+}
+
+.header {
+    position: relative;
+    display: flex;
+    align-items: center;
+    height: 72px;
+    margin: 0 auto;
+    padding: 0 24px;
+    max-width: 500px;
+    justify-content: space-around;
+}
+
+@media screen and (max-width: 500px) {
+    .header {
+        justify-content: space-between;
+        max-width: 300px;
+    }
+}
+
+.header:after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 16px;
+    background: rgba(255,255,255,.5);
+    box-shadow: 0 10px 40px #0000001a;
+    backdrop-filter: blur(5px);
+    z-index: -1
+}
+
+section {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    scroll-snap-align: start;
+    flex-direction: column;
+}
+
+.container {
+    scroll-snap-type: y mandatory;
+    overflow-y: scroll;
+    height: 100vh;
+}
+
+.experience-btn, .logo, .contact-btn {
+    text-align: center;
+    flex: 1;
+}
+
+.experience-btn > span, .logo, .contact-btn > span{
+    cursor: pointer;
+}
+
+.logo {
+    background-color: var(--subtle-color);
+    border-radius: 10px;
+    padding: 10px 0px;
+    color: var(--font-color);
+    font-weight: 600;
+}
+
+.one {
+    flex-direction: row;
+    justify-content: space-around;
+    background-image: url(./assets/undraw_welcoming_re_x0qo.svg);
+    background-repeat: no-repeat;
+    background-size: 40rem;
+    background-position: 90% 100%;
+}
+
+.intro-left {
+    position: relative;
+    padding-right: 5vw;
+    padding-bottom: 15rem;
+}
+
+.one-page-heading {
+    font-size: 5rem;
+    margin-bottom: 3rem;
+}
+
+.one-page-heading::before, .one-page-heading::after,
+.one-page-para::before, .one-page-para::after {
+    font-family: 'La Belle Aurore',cursive;
+    position: absolute;
+    color: var(--html-font-color);
+    font-size: 1rem;
+}
+
+.one-page-heading::before {
+    content: '<h1>';
+    margin-top: -0.5rem;
+    left: -2rem;
+}
+
+.one-page-heading::after {
+    content: "<h1/>";
+    margin-top: 4rem;
+    left: 37rem;
+}
+
+.one-page-para {
+    font-size: 2rem;
+}
+
+.one-page-para::before {
+    content: '<p>';
+    margin-top: -1rem;
+    left: -2rem;
+}
+
+.one-page-para::after {
+    content: '<p/>';
+    margin-top: 2rem;
+    left: -2rem;
+}
