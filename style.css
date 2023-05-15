@@ -142,3 +142,30 @@ section {
     margin-top: 2rem;
     left: -2rem;
 }
+
+.two {
+    flex-direction: row;
+    justify-content: space-around;
+}
+
+.two-left {
+    
+}
+
+.two-right {
+
+}
+
+.three {
+    flex-direction: row;
+    justify-content: space-around;
+}
+
+.three-left {
+
+}
+
+.three-right {
+
+}
+
