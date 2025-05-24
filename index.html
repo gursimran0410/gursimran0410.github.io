@@ -3,17 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gursimran Singh - Interactive Portfolio</title>
+    <title>Gursimran Singh - Portfolio</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <!-- Visualization & Content Choices:
-        - Hero: Name typing animation (CSS). Keyword constellation (continuously float with CSS animations, interactive on mouse-move). "Trace My Journey" button has a more subtle pulse and icon animation.
-        - Navigation: Initially hidden via opacity/transform, appears on scroll past hero using JS-controlled styles for smooth transition. Enhanced styling with border, opacity, and active link indication on click. Goal: Improved usability and aesthetics.
-        - Experience (Journey) & Blueprints (Projects): Company/Institutional logos added (placeholders). OLX Stats use Bar charts (Chart.js). Achievement/Project Cards use HTML/JS for expand/collapse and have CSS animated border accents on hover.
-        - Skills (Toolkit): Interactive Skill Galaxy uses dynamically positioned HTML elements. Bubbles now continuously float using CSS animations (randomized duration/delay via JS). Bubble sizes adjusted for longer text to prevent spilling. Overflow:hidden on container. Goal: Showcase skill breadth effectively and dynamically.
-        - General: Unicode icons for contact. Console log message for developers.
-        - CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. All visuals are HTML/CSS/Tailwind, Unicode, or Chart.js Canvas. Logos are via placeholder <img> tags.
-    -->
     <style>
         body {
             font-family: 'Inter', sans-serif;
@@ -48,14 +40,14 @@
             100% { background-position: 0% 50%; }
         }
 
-        .keyword, .skill-node { /* Combined for floating animation and initial state */
+        .keyword, .skill-node { 
             position: absolute;
-            opacity: 0; /* Initial state for JS fade-in */
-            transform: translateY(15px) scale(0.9); /* Initial state for JS fade-in */
-            transition: transform 0.5s ease-out, opacity 0.5s ease-out; /* For initial fade-in via JS */
+            opacity: 0; 
+            transform: translateY(15px) scale(0.9); 
+            transition: transform 0.5s ease-out, opacity 0.5s ease-out; 
             will-change: transform, opacity;
         }
-        .keyword.floating, .skill-node.floating { /* Class added by JS to start floating */
+        .keyword.floating, .skill-node.floating { 
             animation: continuousFloat 15s ease-in-out infinite;
         }
         @keyframes continuousFloat {
@@ -104,27 +96,7 @@
             padding-top: 1rem;
             padding-bottom: 1rem;
         }
-        .chart-container {
-            position: relative;
-            width: 100%;
-            max-width: 500px;
-            margin-left: auto;
-            margin-right: auto;
-            height: 250px;
-            max-height: 300px;
-        }
-        @media (min-width: 768px) {
-            .chart-container {
-                height: 300px;
-                max-height: 350px;
-            }
-        }
-        .parallax-section {
-            background-attachment: fixed;
-            background-position: center;
-            background-repeat: no-repeat;
-            background-size: cover;
-        }
+        
         ::-webkit-scrollbar {
             width: 8px;
         }
@@ -174,20 +146,7 @@
             left: 20%;
             background-color: #0ea5e9;
         }
-        .loader {
-            border: 4px solid #f3f3f3; 
-            border-top: 4px solid #3498db; 
-            border-radius: 50%;
-            width: 30px;
-            height: 30px;
-            animation: spin 1s linear infinite;
-            margin: 10px auto;
-        }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
+        
         .hero-cta-button {
             animation: pulse-glow-subtle 2.5s infinite ease-in-out;
             display: inline-flex;
@@ -213,7 +172,7 @@
         #skillGalaxy {
             overflow: hidden;
         }
-        .skill-node { /* Base style, opacity and transform for initial fade-in set by JS */
+        .skill-node { 
             display: flex;
             align-items: center;
             justify-content: center;
@@ -224,12 +183,14 @@
             hyphens: auto; 
         }
         .company-logo {
-            width: 40px;
-            height: 40px;
+            width: 32px; 
+            height: 32px;
             object-fit: contain;
             border-radius: 0.25rem;
-            margin-right: 0.75rem;
-            background-color: #f8fafc;
+            margin-right: 0.5rem; 
+            background-color: #f8fafc; 
+            display: inline-block; 
+            vertical-align: middle; 
         }
         .institution-logo {
             width: 48px;
@@ -248,7 +209,7 @@
 
     <nav id="mainNav" class="fixed top-0 left-0 right-0 z-50 bg-slate-800 bg-opacity-95 backdrop-blur-md backdrop-saturate-150 shadow-lg border-b border-slate-700" style="transform: translateY(-100%); opacity: 0;">
         <div class="container mx-auto px-6 py-4 flex justify-between items-center">
-            <a href="#hero" class="text-xl font-bold text-white">Gursimran Singh</a>
+            <a href="#hero" class="text-xl font-bold text-white ">Gursimran Singh</a>
             <div class="md:hidden">
                 <button id="hamburgerButton" class="text-white focus:outline-none">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
@@ -277,7 +238,7 @@
         <div id="keywordContainer" class="absolute inset-0 opacity-40">
         </div>
         <div class="relative z-10">
-            <h1 id="heroName" class="text-5xl md:text-7xl font-bold mb-4 typing-effect leading-normal">Gursimran Singh</h1>
+            <h1 id="heroName" class="text-5xl md:text-7xl font-bold mb-4 typing-effect leading-normal" style="line-height: 1.15">Gursimran Singh</h1>
             <p class="text-xl md:text-2xl text-slate-300 mb-8">Crafting Scalable and Performant Digital Solutions.</p>
             <a href="#journey" class="hero-cta-button bg-sky-600 hover:bg-sky-700 text-white font-bold py-3 px-8 rounded-lg text-lg transition duration-300">
                 Trace My Journey <span class="arrow-icon">&darr;</span>
@@ -298,18 +259,37 @@
                         <div class="md:w-1/2 md:pr-8 md:text-right">
                             <div class="bg-white p-6 rounded-lg shadow-xl hover:shadow-2xl transition-shadow duration-300 mb-4 md:mb-0">
                                 <div class="flex items-center md:justify-end mb-2">
-                                    <img src="https://placehold.co/100x100/e2e8f0/334155?text=Birdeye" alt="Birdeye Logo" class="company-logo" onerror="this.src='https://placehold.co/100x100/e2e8f0/334155?text=Logo'; this.onerror=null;">
                                     <h3 class="text-2xl font-semibold text-sky-700">Birdeye</h3>
                                 </div>
                                 <p class="text-sm text-slate-500 mb-2 md:text-right">Software Engineer (Frontend)</p>
                                 <p class="text-slate-600 italic mb-3 md:text-right">Elevating user experiences on a leading customer experience platform.</p>
                                 <div class="achievement-card cursor-pointer" data-company="Birdeye">
                                     <strong class="text-slate-700">Frontend UI Development (React & Typescript)</strong>
-                                    <div class="details text-sm text-slate-600 text-left md:text-right">Contributed to the frontend UI of Birdeye's platform, focusing on robust and scalable components.</div>
+                                    <div class="details text-sm text-slate-600 text-left md:text-right">Contributing to frontend Ul of birdeye's platform using React and Typescript.</div>
                                 </div>
                                 <div class="achievement-card cursor-pointer" data-company="Birdeye">
                                     <strong class="text-slate-700">Content Cloud Storage Platform</strong>
-                                    <div class="details text-sm text-slate-600 text-left md:text-right">Implemented a cloud storage solution for images/videos, enabling users to directly manage and add content to social media posts within the platform.</div>
+                                    <div class="details text-sm text-slate-600 text-left md:text-right">Implemented content (images/videos) cloud storage platform to help users directly store the content inside the platform and add it to social media posts directly from the birdeye's social management platform.</div>
+                                </div>
+                                <div class="achievement-card cursor-pointer" data-company="Birdeye">
+                                    <strong class="text-slate-700">Content Tagging System</strong>
+                                    <div class="details text-sm text-slate-600 text-left md:text-right">Implemented provision to add tags to content which assists users to search from multiple contents easily.</div>
+                                </div>
+                                 <div class="achievement-card cursor-pointer" data-company="Birdeye">
+                                    <strong class="text-slate-700">Jest & React Testing Library Integration</strong>
+                                    <div class="details text-sm text-slate-600 text-left md:text-right">Integrated jest test cases with react testing library to multiple components.</div>
+                                </div>
+                                <div class="achievement-card cursor-pointer" data-company="Birdeye">
+                                    <strong class="text-slate-700">Data Visualization Dashboards</strong>
+                                    <div class="details text-sm text-slate-600 text-left md:text-right">To improve data visualization, I've implemented several dashboards featuring tables and charts.</div>
+                                </div>
+                                <div class="achievement-card cursor-pointer" data-company="Birdeye">
+                                    <strong class="text-slate-700">AI Summary Frontend</strong>
+                                    <div class="details text-sm text-slate-600 text-left md:text-right">Developed Al summary frontend and integrated with backend using firebase and websockets, which helps users to get brief insights of large datasets.</div>
+                                </div>
+                                <div class="achievement-card cursor-pointer" data-company="Birdeye">
+                                    <strong class="text-slate-700">Code Review & Quality Assurance</strong>
+                                    <div class="details text-sm text-slate-600 text-left md:text-right">Participate in code reviews to ensure code quality, performance, and adherence to coding standards.</div>
                                 </div>
                                 <p class="mt-3 text-xs text-amber-600 md:text-right">Key Tech: React, Typescript, Firebase, WebSockets, Jest</p>
                             </div>
@@ -323,20 +303,41 @@
                          <div class="md:w-1/2 md:pl-8 md:text-left">
                             <div class="bg-white p-6 rounded-lg shadow-xl hover:shadow-2xl transition-shadow duration-300 mb-4 md:mb-0">
                                 <div class="flex items-center mb-2">
-                                    <img src="https://placehold.co/100x100/e2e8f0/334155?text=OLX" alt="OLX Group Logo" class="company-logo" onerror="this.src='https://placehold.co/100x100/e2e8f0/334155?text=Logo'; this.onerror=null;">
                                     <h3 class="text-2xl font-semibold text-sky-700">OLX Group</h3>
                                 </div>
                                 <p class="text-sm text-slate-500 mb-2">Software Engineer</p>
                                 <p class="text-slate-600 italic mb-3">Enhancing developer productivity and platform performance.</p>
                                 <div class="achievement-card cursor-pointer" data-company="OLX Group">
                                     <strong class="text-slate-700">Developer Platform (Docker & Kubernetes)</strong>
-                                    <div class="details text-sm text-slate-600">Collaborated with SREs to develop a platform for managing, deploying, and testing applications in ephemeral environments using Docker and Kubernetes.</div>
+                                    <div class="details text-sm text-slate-600">Worked alongside SRE's to develop a platform which helps developers to manage, deploy and test their applications over an ephemeral environment designed using docker and kubernetes.</div>
                                 </div>
-                                <div class="chart-container my-4">
-                                    <canvas id="olxPageLoadChart"></canvas>
+                                <div class="achievement-card cursor-pointer" data-company="OLX Group">
+                                    <strong class="text-slate-700">Platform Optimization & UX Improvement</strong>
+                                    <div class="details text-sm text-slate-600">Optimized the platform in terms of overall usability for improved user experience. Enhanced platform page load times using multiple techniques which lead to 30-40% reduction in page load times.</div>
                                 </div>
-                                <div class="chart-container my-4">
-                                    <canvas id="olxChunkSizeChart"></canvas>
+                                <div class="achievement-card cursor-pointer" data-company="OLX Group">
+                                    <strong class="text-slate-700">Frontend Build Optimization</strong>
+                                    <div class="details text-sm text-slate-600">Reduced the chunk size of frontend build to 75-80% which leads to improvement in page load times even in slower network connections.</div>
+                                </div>
+                                <div class="achievement-card cursor-pointer" data-company="OLX Group">
+                                    <strong class="text-slate-700">New Relic Integration</strong>
+                                    <div class="details text-sm text-slate-600">Integrated new relic for better platform performance visibility.</div>
+                                </div>
+                                <div class="achievement-card cursor-pointer" data-company="OLX Group">
+                                    <strong class="text-slate-700">Code Reusability Enhancement</strong>
+                                    <div class="details text-sm text-slate-600">Improved the code in terms of re-usability which helped other developers to have better visibility.</div>
+                                </div>
+                                <div class="achievement-card cursor-pointer" data-company="OLX Group">
+                                    <strong class="text-slate-700">React Testing Library & Jest Integration</strong>
+                                    <div class="details text-sm text-slate-600">Integrated React Testing library with test cases written in jest.</div>
+                                </div>
+                                <div class="achievement-card cursor-pointer" data-company="OLX Group">
+                                    <strong class="text-slate-700">CI/CD Pipeline & Automated Changelog</strong>
+                                    <div class="details text-sm text-slate-600">Setup a complete new CI/CD pipeline in gitlab for automated testing, deployments, deployment rollback. Integrated automated changelog maintenance process in gitlab using git trailers.</div>
+                                </div>
+                                 <div class="achievement-card cursor-pointer" data-company="OLX Group">
+                                    <strong class="text-slate-700">Kubernetes Debugging</strong>
+                                    <div class="details text-sm text-slate-600">Worked alongside SRE's to debug issues related to kubernetes and their related nodes.</div>
                                 </div>
                                 <p class="mt-3 text-xs text-amber-600">Key Tech: Docker, Kubernetes, React, GitLab CI/CD, New Relic, Jest</p>
                             </div>
@@ -350,14 +351,25 @@
                         <div class="md:w-1/2 md:pr-8 md:text-right">
                             <div class="bg-white p-6 rounded-lg shadow-xl hover:shadow-2xl transition-shadow duration-300 mb-4 md:mb-0">
                                 <div class="flex items-center md:justify-end mb-2">
-                                    <img src="https://placehold.co/100x100/e2e8f0/334155?text=Airtel" alt="Airtel Payments Bank Logo" class="company-logo" onerror="this.src='https://placehold.co/100x100/e2e8f0/334155?text=Logo'; this.onerror=null;">
                                     <h3 class="text-2xl font-semibold text-sky-700">Airtel Payments Bank</h3>
                                 </div>
                                 <p class="text-sm text-slate-500 mb-2 md:text-right">Software Engineer</p>
                                 <p class="text-slate-600 italic mb-3 md:text-right">Building user-centric features for a large-scale financial platform.</p>
                                 <div class="achievement-card cursor-pointer" data-company="Airtel">
+                                    <strong class="text-slate-700">Complex Web Page Designs</strong>
+                                    <div class="details text-sm text-slate-600 text-left md:text-right">Worked alongside senior dev's to build complex web page designs for airtel's website used by 100000+ users daily.</div>
+                                </div>
+                                <div class="achievement-card cursor-pointer" data-company="Airtel">
+                                    <strong class="text-slate-700">New Help Functionality (Angular)</strong>
+                                    <div class="details text-sm text-slate-600 text-left md:text-right">Built a complete new help functionality for the user's assistance over a platform written in Angular.</div>
+                                </div>
+                                <div class="achievement-card cursor-pointer" data-company="Airtel">
                                     <strong class="text-slate-700">UI Enhancements & User Interaction (React)</strong>
-                                    <div class="details text-sm text-slate-600 text-left md:text-right">Enhanced website UI (React) by collaborating with product managers, improving user interaction and reducing steps for specific operations.</div>
+                                    <div class="details text-sm text-slate-600 text-left md:text-right">Enhanced the website Ul written in React by collaborating with product managers and subject matter experts. Implemented new designs over developed platforms to enhance user interaction and reduced steps to perform specific operations over Ul.</div>
+                                </div>
+                                 <div class="achievement-card cursor-pointer" data-company="Airtel">
+                                    <strong class="text-slate-700">Fastag Replacement & Transaction History</strong>
+                                    <div class="details text-sm text-slate-600 text-left md:text-right">Integrated fastag replacement functionality over Airtel Bank official website that helps customers to replace tags in case of any issue. Designed transactions history webview to view recent transactions occurred over a particular fastag.</div>
                                 </div>
                                 <p class="mt-3 text-xs text-amber-600 md:text-right">Key Tech: React, Angular, UI/UX Design</p>
                             </div>
@@ -371,15 +383,26 @@
                     <div class="experience-item md:flex md:flex-row-reverse md:items-start md:space-x-reverse md:space-x-8">
                          <div class="md:w-1/2 md:pl-8 md:text-left">
                             <div class="bg-white p-6 rounded-lg shadow-xl hover:shadow-2xl transition-shadow duration-300 mb-4 md:mb-0">
-                                <div class="flex items-center mb-2">
-                                     <img src="https://placehold.co/100x100/e2e8f0/334155?text=Go" alt="Go Group Logo" class="company-logo" onerror="this.src='https://placehold.co/100x100/e2e8f0/334155?text=Logo'; this.onerror=null;">
+                                 <div class="flex items-center mb-2">
                                     <h3 class="text-2xl font-semibold text-sky-700">Go Group</h3>
                                 </div>
                                 <p class="text-sm text-slate-500 mb-2">Software Engineer</p>
                                 <p class="text-slate-600 italic mb-3">Driving platform growth through SEO and reusable components.</p>
                                 <div class="achievement-card cursor-pointer" data-company="Go Group">
                                     <strong class="text-slate-700">SEO Page Development (React)</strong>
-                                    <div class="details text-sm text-slate-600">Worked with product managers to build SEO pages to direct traffic to the React-based platform.</div>
+                                    <div class="details text-sm text-slate-600">Worked alongside product managers to build SEO pages to direct traffic over the platform written in React.</div>
+                                </div>
+                                <div class="achievement-card cursor-pointer" data-company="Go Group">
+                                    <strong class="text-slate-700">Reusable Project Components</strong>
+                                    <div class="details text-sm text-slate-600">Contributed to the reusable project components that will save a lot of developer's efforts.</div>
+                                </div>
+                                <div class="achievement-card cursor-pointer" data-company="Go Group">
+                                    <strong class="text-slate-700">UI Design Frameworks</strong>
+                                    <div class="details text-sm text-slate-600">Worked on designing Ul using Ant Design, Material Ul and Next.Js framework.</div>
+                                </div>
+                                <div class="achievement-card cursor-pointer" data-company="Go Group">
+                                    <strong class="text-slate-700">Git & Collaborative Development</strong>
+                                    <div class="details text-sm text-slate-600">Familiar with Git and collaborative development practices.</div>
                                 </div>
                                 <p class="mt-3 text-xs text-amber-600">Key Tech: React, Next.js, Ant Design, Material UI, SEO</p>
                             </div>
@@ -394,14 +417,25 @@
                         <div class="md:w-1/2 md:pr-8 md:text-right">
                             <div class="bg-white p-6 rounded-lg shadow-xl hover:shadow-2xl transition-shadow duration-300">
                                 <div class="flex items-center md:justify-end mb-2">
-                                    <img src="https://placehold.co/100x100/e2e8f0/334155?text=IVP" alt="Indus Valley Partners Logo" class="company-logo" onerror="this.src='https://placehold.co/100x100/e2e8f0/334155?text=Logo'; this.onerror=null;">
                                     <h3 class="text-2xl font-semibold text-sky-700">Indus Valley Partners</h3>
                                 </div>
                                 <p class="text-sm text-slate-500 mb-2 md:text-right">Software Engineer</p>
                                 <p class="text-slate-600 italic mb-3 md:text-right">Developing and maintaining web applications with diverse technologies.</p>
                                 <div class="achievement-card cursor-pointer" data-company="IVP">
                                     <strong class="text-slate-700">Configuration Changes (Full Stack)</strong>
-                                    <div class="details text-sm text-slate-600 text-left md:text-right">Implemented multiple configuration changes in in-house products using React.js, Node.js, SQL Server, and MongoDB.</div>
+                                    <div class="details text-sm text-slate-600 text-left md:text-right">Implemented multiple configuration changes in the organisation's inhouse products using React.js, Node.js, SQL Server, MongoDb.</div>
+                                </div>
+                                <div class="achievement-card cursor-pointer" data-company="IVP">
+                                    <strong class="text-slate-700">Third-Party API Integration (JWT)</strong>
+                                    <div class="details text-sm text-slate-600 text-left md:text-right">Designed and integrated third party API's, authenticating various channels using JSON Web Tokens.</div>
+                                </div>
+                                <div class="achievement-card cursor-pointer" data-company="IVP">
+                                    <strong class="text-slate-700">Collaboration & Application Maintenance</strong>
+                                    <div class="details text-sm text-slate-600 text-left md:text-right">Collaborated with subject matter experts at different project phases to develop and maintain web based applications.</div>
+                                </div>
+                                <div class="achievement-card cursor-pointer" data-company="IVP">
+                                    <strong class="text-slate-700">Client Interaction & Issue Resolution</strong>
+                                    <div class="details text-sm text-slate-600 text-left md:text-right">Interact directly with clients to address issues/requests ranging from the system level to the data level.</div>
                                 </div>
                                 <p class="mt-3 text-xs text-amber-600 md:text-right">Key Tech: React.js, Node.js, SQL Server, MongoDB, JWT</p>
                             </div>
@@ -455,7 +489,6 @@
             <div class="grid md:grid-cols-2 gap-8">
                 <div class="bg-white p-8 rounded-lg shadow-xl">
                     <div class="flex flex-col items-center md:items-start text-center md:text-left">
-                        <img src="https://placehold.co/150x150/e2e8f0/334155?text=Chitkara" alt="Chitkara University Logo" class="institution-logo" onerror="this.src='https://placehold.co/150x150/e2e8f0/334155?text=Logo'; this.onerror=null;">
                         <h3 class="text-2xl font-semibold text-sky-700 mb-1 mt-2">Education</h3>
                     </div>
                     <div class="mt-3">
@@ -468,16 +501,13 @@
                 </div>
                 <div class="bg-white p-8 rounded-lg shadow-xl">
                      <div class="flex flex-col items-center md:items-start text-center md:text-left">
-                        <img src="https://placehold.co/150x150/e2e8f0/334155?text=Certs" alt="Certifications Icon" class="institution-logo" onerror="this.src='https://placehold.co/150x150/e2e8f0/334155?text=Logo'; this.onerror=null;">
                         <h3 class="text-2xl font-semibold text-sky-700 mb-1 mt-2">Certifications</h3>
                     </div>
                     <ul class="space-y-4 mt-3">
                         <li class="text-slate-600 flex items-center">
-                            <img src="https://placehold.co/80x80/e2e8f0/334155?text=Udacity" alt="Udacity Logo" class="company-logo w-8 h-8 mr-2" onerror="this.src='https://placehold.co/80x80/e2e8f0/334155?text=Logo'; this.onerror=null;">
                             <strong class="text-slate-700">Udacity:</strong>&nbsp;Front End Web Development - 1
                         </li>
                         <li class="text-slate-600 flex items-center">
-                            <img src="https://placehold.co/80x80/e2e8f0/334155?text=Udemy" alt="Udemy Logo" class="company-logo w-8 h-8 mr-2" onerror="this.src='https://placehold.co/80x80/e2e8f0/334155?text=Logo'; this.onerror=null;">
                             <strong class="text-slate-700">Udemy:</strong>&nbsp;The Complete React Native + Hooks Course
                         </li>
                     </ul>
@@ -499,7 +529,7 @@
                 <a href="mailto:gursimransingh154@gmail.com" class="flex items-center space-x-2 text-lg hover:text-amber-400 transition-colors">
                     <span>&#9993;</span> <span>gursimransingh154@gmail.com</span>
                 </a>
-                <a href="https://linkedin.com/in/qursimransingh0410" target="_blank" rel="noopener noreferrer" class="flex items-center space-x-2 text-lg hover:text-amber-400 transition-colors">
+                <a href="https://www.linkedin.com/in/gursimransingh0410/" target="_blank" rel="noopener noreferrer" class="flex items-center space-x-2 text-lg hover:text-amber-400 transition-colors">
                     <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
                     <span>LinkedIn</span>
                 </a>
@@ -522,26 +552,34 @@
             const mobileMenuLinks = document.querySelectorAll('#mobileMenu a.nav-link-mobile');
             const mainNav = document.getElementById('mainNav');
             const heroSection = document.getElementById('hero');
+            const sections = document.querySelectorAll('section');
             let navVisible = false;
 
-            function setActiveLink(clickedLink, linkCollection) {
-                linkCollection.forEach(link => link.classList.remove('active', 'active-mobile'));
-                clickedLink.classList.add(linkCollection === navMenuLinks ? 'active' : 'active-mobile');
-            }
-
-            navMenuLinks.forEach(link => {
-                link.addEventListener('click', (e) => {
-                    setActiveLink(e.currentTarget, navMenuLinks);
-                });
-            });
-            mobileMenuLinks.forEach(link => {
-                link.addEventListener('click', (e) => {
-                    setActiveLink(e.currentTarget, mobileMenuLinks);
-                     if (!mobileMenu.classList.contains('hidden')) {
-                        mobileMenu.classList.add('hidden');
+            function setActiveLink() {
+                let currentSectionId = 'hero'; 
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop - mainNav.offsetHeight - 50; 
+                    const sectionBottom = sectionTop + section.offsetHeight;
+                    if (window.scrollY >= sectionTop && window.scrollY < sectionBottom) {
+                        currentSectionId = section.id;
                     }
                 });
-            });
+
+                navMenuLinks.forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href') === `#${currentSectionId}`) {
+                        link.classList.add('active');
+                    }
+                });
+                mobileMenuLinks.forEach(link => {
+                    link.classList.remove('active-mobile');
+                     if (link.getAttribute('href') === `#${currentSectionId}`) {
+                        link.classList.add('active-mobile');
+                    }
+                });
+            }
+            
+            setActiveLink(); 
 
             hamburgerButton.addEventListener('click', () => {
                 mobileMenu.classList.toggle('hidden');
@@ -560,6 +598,7 @@
                     mainNav.style.transform = 'translateY(-100%)';
                     navVisible = false;
                 }
+                setActiveLink(); 
             });
 
 
@@ -568,7 +607,13 @@
             function animateKeywordsIn() {
                 const keywordContainer = document.getElementById('keywordContainer');
                 if (!keywordContainer) return;
-                const keywords = ["React", "TypeScript", "JavaScript", "Kubernetes", "Docker", "Frontend", "Optimization", "Firebase", "AWS", "CI/CD", "Performance", "UI/UX", "Node.js", "SQL", "MongoDB", "Agile"];
+                const keywords = [
+                    "React", "TypeScript", "JavaScript", "Kubernetes", "Docker", "Frontend", 
+                    "Optimization", "Firebase", "AWS", "CI/CD", "Performance", "UI/UX", 
+                    "Node.js", "SQL", "MongoDB", "Agile", "AngularJs", "React Spring", "Redux",
+                    "SRE", "SEO", "Data Visualization", "Full Stack", "JWT", "MERN Stack", "Jest",
+                    "GitLab", "Ephemeral Environments", "Thunk", "Saga", "Github", "BitBucket", "Akamai"
+                ];
                 const keywordElements = [];
 
                 keywords.forEach(keywordText => {
@@ -594,7 +639,7 @@
                         el.style.animationDuration = `${Math.random() * 10 + 10}s`; 
                         el.style.animationDelay = `${Math.random() * 2}s`;
 
-                    }, index * 150); 
+                    }, index * 100); // Staggered appearance
                 });
             }
             
@@ -647,52 +692,6 @@
                     card.classList.toggle('open');
                 });
             });
-
-            const olxPageLoadCtx = document.getElementById('olxPageLoadChart')?.getContext('2d');
-            if (olxPageLoadCtx) {
-                new Chart(olxPageLoadCtx, {
-                    type: 'bar',
-                    data: {
-                        labels: ['Before Optimization', 'After Optimization'],
-                        datasets: [{
-                            label: 'Page Load Time Index',
-                            data: [100, 65], 
-                            backgroundColor: ['rgba(251, 146, 60, 0.6)', 'rgba(56, 189, 248, 0.6)'],
-                            borderColor: ['rgba(251, 146, 60, 1)', 'rgba(56, 189, 248, 1)'],
-                            borderWidth: 1
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        scales: { y: { beginAtZero: true, max: 110, ticks: { callback: value => value + '%' } } },
-                        plugins: { legend: { display: false }, title: { display: true, text: 'Page Load Time Improvement (30-40% Reduction)' } }
-                    }
-                });
-            }
-
-            const olxChunkSizeCtx = document.getElementById('olxChunkSizeChart')?.getContext('2d');
-            if (olxChunkSizeCtx) {
-                new Chart(olxChunkSizeCtx, {
-                    type: 'bar',
-                    data: {
-                        labels: ['Original Chunk Size', 'Optimized Chunk Size'],
-                        datasets: [{
-                            label: 'Build Chunk Size Index',
-                            data: [100, 22.5], 
-                            backgroundColor: ['rgba(244, 114, 182, 0.6)', 'rgba(22, 163, 74, 0.6)'],
-                            borderColor: ['rgba(244, 114, 182, 1)', 'rgba(22, 163, 74, 1)'],
-                            borderWidth: 1
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        scales: { y: { beginAtZero: true, max: 110, ticks: { callback: value => value + '%' } } },
-                        plugins: { legend: { display: false }, title: { display: true, text: 'Frontend Build Chunk Size Reduction (75-80%)' } }
-                    }
-                });
-            }
             
              function initializeSkillGalaxy(attempt = 1) {
                 const skillGalaxyContainer = document.getElementById('skillGalaxy');
@@ -747,12 +746,11 @@
                         el.style.left = `${(leftPosPx / galaxyWidth) * 100}%`;
                         el.style.top = `${(topPosPx / galaxyHeight) * 100}%`;
                         
-                        // Apply initial opacity and transform for fade-in effect
                         el.style.opacity = '0';
                         el.style.transform = 'translateY(15px) scale(0.9)';
 
                         setTimeout(() => {
-                            const randomOpacity = Math.random() * 0.3 + 0.7; // Make them a bit more visible
+                            const randomOpacity = Math.random() * 0.3 + 0.7; 
                             el.style.opacity = randomOpacity;
                             el.style.transform = 'translateY(0) scale(1)';
                             el.dataset.initialOpacity = randomOpacity;
@@ -760,7 +758,7 @@
                             el.classList.add('floating');
                             el.style.animationDuration = `${Math.random() * 12 + 12}s`; 
                             el.style.animationDelay = `${Math.random() * 5}s`;    
-                        }, index * 100); // Staggered appearance for skill bubbles
+                        }, index * 100); 
 
 
                         skillGalaxyContainer.appendChild(el);
