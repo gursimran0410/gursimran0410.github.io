@@ -7,39 +7,89 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <!-- Visualization & Content Choices:
-        - Hero: Name typing animation (JS), Keyword constellation (JS animated HTML elements). Goal: Engage, Introduce. Interaction: Mouse move on constellation. Justification: Dynamic intro.
-        - Experience (Journey):
-            - OLX Stats (Page Load/Chunk Size Reduction): Bar charts (Chart.js). Goal: Quantify impact. Interaction: Tooltips on chart. Justification: Clear visual for performance gains.
-            - Birdeye Dashboards: Textual mention of impact. Goal: Acknowledge skill. Justification: No specific data for a chart, so descriptive text is better.
-            - Achievement Cards: HTML/JS for expand/collapse. Goal: Detail contributions. Interaction: Click to expand. Justification: Keeps timeline clean, allows drill-down.
-        - Skills (Toolkit): Interactive Skill Galaxy (HTML elements positioned with JS). Goal: Showcase skill breadth. Interaction: Hover/click effects on skills. Justification: More engaging than a static list.
-        - Education GPA: Visual text. Goal: Highlight academic achievement.
-        - General: Unicode icons for contact info, links. Goal: Visual cues.
-        - CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. All visuals are HTML/CSS/Tailwind, Unicode, or Chart.js Canvas.
+        - Hero: Name typing animation (CSS). Keyword constellation (continuously float with CSS animations, interactive on mouse-move). "Trace My Journey" button has a more subtle pulse and icon animation.
+        - Navigation: Initially hidden via opacity/transform, appears on scroll past hero using JS-controlled styles for smooth transition. Enhanced styling with border, opacity, and active link indication on click. Goal: Improved usability and aesthetics.
+        - Experience (Journey) & Blueprints (Projects): Company/Institutional logos added (placeholders). OLX Stats use Bar charts (Chart.js). Achievement/Project Cards use HTML/JS for expand/collapse and have CSS animated border accents on hover.
+        - Skills (Toolkit): Interactive Skill Galaxy uses dynamically positioned HTML elements. Bubbles now continuously float using CSS animations (randomized duration/delay via JS). Bubble sizes adjusted for longer text to prevent spilling. Overflow:hidden on container. Goal: Showcase skill breadth effectively and dynamically.
+        - General: Unicode icons for contact. Console log message for developers.
+        - CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. All visuals are HTML/CSS/Tailwind, Unicode, or Chart.js Canvas. Logos are via placeholder <img> tags.
     -->
     <style>
         body {
             font-family: 'Inter', sans-serif;
         }
-        @keyframes typing {
+        .typing-effect {
+            display: inline-block;
+            overflow: hidden;
+            white-space: nowrap;
+            border-right: .15em solid orange;
+            width: 0;
+            animation: typingAnim 2s steps(15, end) 0.5s forwards, 
+                       blinkCaretAnim .75s step-end infinite;
+            animation-delay: 0.5s, 2.5s;
+        }
+        @keyframes typingAnim {
             from { width: 0 }
             to { width: 100% }
         }
-        @keyframes blink-caret {
+        @keyframes blinkCaretAnim {
             from, to { border-color: transparent }
             50% { border-color: orange; }
         }
-        .typing-effect {
-            overflow: hidden;
-            white-space: nowrap;
-            animation: typing 3.5s steps(40, end), blink-caret .75s step-end infinite;
-            border-right: .15em solid orange;
+        
+        #hero {
+            background: linear-gradient(-45deg, #1e293b, #0f172a, #0c0a09, #0284c7);
+            background-size: 400% 400%;
+            animation: heroGradient 25s ease infinite;
         }
-        .keyword {
+        @keyframes heroGradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .keyword, .skill-node { /* Combined for floating animation and initial state */
             position: absolute;
-            transition: transform 0.3s ease-out, opacity 0.3s ease-out;
-            will-change: transform;
+            opacity: 0; /* Initial state for JS fade-in */
+            transform: translateY(15px) scale(0.9); /* Initial state for JS fade-in */
+            transition: transform 0.5s ease-out, opacity 0.5s ease-out; /* For initial fade-in via JS */
+            will-change: transform, opacity;
         }
+        .keyword.floating, .skill-node.floating { /* Class added by JS to start floating */
+            animation: continuousFloat 15s ease-in-out infinite;
+        }
+        @keyframes continuousFloat {
+            0%, 100% { transform: translateY(0px) translateX(0px) scale(1); }
+            25% { transform: translateY(-6px) translateX(4px) scale(1.02); }
+            50% { transform: translateY(4px) translateX(-3px) scale(0.98); }
+            75% { transform: translateY(-3px) translateX(6px) scale(1.01); }
+        }
+
+        .experience-item > div > div, 
+        #blueprints .bg-white,
+        #credentials .bg-white {
+            position: relative; 
+        }
+        .experience-item > div > div::before, 
+        #blueprints .bg-white::before,
+        #credentials .bg-white::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 0;
+            height: 3px;
+            background-color: #0ea5e9; 
+            transition: width 0.3s ease-out;
+            border-top-left-radius: 0.375rem; 
+            border-top-right-radius: 0.375rem; 
+        }
+        .experience-item > div > div:hover::before,
+        #blueprints .bg-white:hover::before,
+        #credentials .bg-white:hover::before {
+            width: 100%;
+        }
+
         .achievement-card .details {
             max-height: 0;
             overflow: hidden;
@@ -89,10 +139,27 @@
             background: #555;
         }
         .nav-link {
+            position: relative;
             transition: color 0.3s ease;
+            padding-bottom: 4px; 
         }
         .nav-link:hover {
-            color: #fbbf24; /* amber-400 */
+            color: #fbbf24; 
+        }
+        .nav-link.active {
+            color: #fbbf24;
+            font-weight: 600;
+        }
+        .nav-link.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 6px;
+            height: 6px;
+            background-color: #fbbf24;
+            border-radius: 50%;
         }
         .section-title-underline {
             display: inline-block;
@@ -105,9 +172,9 @@
             height: 3px;
             bottom: -5px;
             left: 20%;
-            background-color: #0ea5e9; /* sky-500 */
+            background-color: #0ea5e9;
         }
-        .loader { /* Kept for potential future use, though not used now */
+        .loader {
             border: 4px solid #f3f3f3; 
             border-top: 4px solid #3498db; 
             border-radius: 50%;
@@ -120,20 +187,75 @@
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
+
+        .hero-cta-button {
+            animation: pulse-glow-subtle 2.5s infinite ease-in-out;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        @keyframes pulse-glow-subtle {
+            0% { box-shadow: 0 0 3px #0ea5e9, 0 0 6px #0ea5e9; transform: scale(1); }
+            50% { box-shadow: 0 0 8px #0ea5e9, 0 0 12px #0ea5e9; transform: scale(1.015); }
+            100% { box-shadow: 0 0 3px #0ea5e9, 0 0 6px #0ea5e9; transform: scale(1); }
+        }
+        .hero-cta-button .arrow-icon {
+            display: inline-block;
+            transition: transform 0.3s ease-out;
+        }
+        .hero-cta-button:hover .arrow-icon {
+            animation: bounce-arrow 0.6s ease-in-out infinite alternate;
+        }
+        @keyframes bounce-arrow {
+            from { transform: translateY(0px); }
+            to { transform: translateY(3px); }
+        }
+        #skillGalaxy {
+            overflow: hidden;
+        }
+        .skill-node { /* Base style, opacity and transform for initial fade-in set by JS */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 4px; 
+            overflow-wrap: break-word; 
+            line-height: 1.15; 
+            hyphens: auto; 
+        }
+        .company-logo {
+            width: 40px;
+            height: 40px;
+            object-fit: contain;
+            border-radius: 0.25rem;
+            margin-right: 0.75rem;
+            background-color: #f8fafc;
+        }
+        .institution-logo {
+            width: 48px;
+            height: 48px;
+            object-fit: contain;
+            border-radius: 0.375rem;
+            margin-bottom: 0.5rem;
+            background-color: #f8fafc;
+        }
+        #mainNav {
+            transition: transform 0.3s ease-out, opacity 0.3s ease-out;
+        }
     </style>
 </head>
 <body class="bg-slate-100 text-slate-800 antialiased">
 
-    <nav id="mainNav" class="fixed top-0 left-0 right-0 z-50 bg-slate-800 bg-opacity-90 backdrop-blur-md shadow-lg transition-all duration-300">
-        <div class="container mx-auto px-6 py-3 flex justify-between items-center">
+    <nav id="mainNav" class="fixed top-0 left-0 right-0 z-50 bg-slate-800 bg-opacity-95 backdrop-blur-md backdrop-saturate-150 shadow-lg border-b border-slate-700" style="transform: translateY(-100%); opacity: 0;">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
             <a href="#hero" class="text-xl font-bold text-white">Gursimran Singh</a>
             <div class="md:hidden">
                 <button id="hamburgerButton" class="text-white focus:outline-none">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
                 </button>
             </div>
-            <div id="navMenu" class="hidden md:flex space-x-4">
-                <a href="#hero" class="nav-link text-slate-200">Home</a>
+            <div id="navMenu" class="hidden md:flex space-x-6">
+                <a href="#hero" class="nav-link text-slate-200 active">Home</a>
                 <a href="#journey" class="nav-link text-slate-200">Journey</a>
                 <a href="#toolkit" class="nav-link text-slate-200">Toolkit</a>
                 <a href="#blueprints" class="nav-link text-slate-200">Blueprints</a>
@@ -141,24 +263,24 @@
                 <a href="#connect" class="nav-link text-slate-200">Connect</a>
             </div>
         </div>
-        <div id="mobileMenu" class="hidden md:hidden bg-slate-800">
-            <a href="#hero" class="block py-2 px-4 text-sm text-slate-200 hover:bg-slate-700">Home</a>
-            <a href="#journey" class="block py-2 px-4 text-sm text-slate-200 hover:bg-slate-700">Journey</a>
-            <a href="#toolkit" class="block py-2 px-4 text-sm text-slate-200 hover:bg-slate-700">Toolkit</a>
-            <a href="#blueprints" class="block py-2 px-4 text-sm text-slate-200 hover:bg-slate-700">Blueprints</a>
-            <a href="#credentials" class="block py-2 px-4 text-sm text-slate-200 hover:bg-slate-700">Credentials</a>
-            <a href="#connect" class="block py-2 px-4 text-sm text-slate-200 hover:bg-slate-700">Connect</a>
+        <div id="mobileMenu" class="hidden md:hidden bg-slate-800 border-t border-slate-700">
+            <a href="#hero" class="block py-3 px-4 text-sm text-slate-200 hover:bg-slate-700 nav-link-mobile active-mobile">Home</a>
+            <a href="#journey" class="block py-3 px-4 text-sm text-slate-200 hover:bg-slate-700 nav-link-mobile">Journey</a>
+            <a href="#toolkit" class="block py-3 px-4 text-sm text-slate-200 hover:bg-slate-700 nav-link-mobile">Toolkit</a>
+            <a href="#blueprints" class="block py-3 px-4 text-sm text-slate-200 hover:bg-slate-700 nav-link-mobile">Blueprints</a>
+            <a href="#credentials" class="block py-3 px-4 text-sm text-slate-200 hover:bg-slate-700 nav-link-mobile">Credentials</a>
+            <a href="#connect" class="block py-3 px-4 text-sm text-slate-200 hover:bg-slate-700 nav-link-mobile">Connect</a>
         </div>
     </nav>
 
-    <section id="hero" class="min-h-screen flex flex-col justify-center items-center text-center bg-gradient-to-br from-slate-800 via-slate-900 to-black text-white p-6 relative overflow-hidden">
-        <div id="keywordContainer" class="absolute inset-0 opacity-20">
-            </div>
+    <section id="hero" class="min-h-screen flex flex-col justify-center items-center text-center text-white p-6 relative overflow-hidden">
+        <div id="keywordContainer" class="absolute inset-0 opacity-40">
+        </div>
         <div class="relative z-10">
-            <h1 id="heroName" class="text-5xl md:text-7xl font-bold mb-4"></h1>
+            <h1 id="heroName" class="text-5xl md:text-7xl font-bold mb-4 typing-effect leading-normal">Gursimran Singh</h1>
             <p class="text-xl md:text-2xl text-slate-300 mb-8">Crafting Scalable and Performant Digital Solutions.</p>
-            <a href="#journey" class="bg-sky-600 hover:bg-sky-700 text-white font-bold py-3 px-8 rounded-lg text-lg transition duration-300 shadow-lg">
-                Trace My Journey &darr;
+            <a href="#journey" class="hero-cta-button bg-sky-600 hover:bg-sky-700 text-white font-bold py-3 px-8 rounded-lg text-lg transition duration-300">
+                Trace My Journey <span class="arrow-icon">&darr;</span>
             </a>
         </div>
     </section>
@@ -171,14 +293,16 @@
             </p>
             <div class="relative">
                 <div class="hidden md:block absolute top-0 bottom-0 left-1/2 w-1 bg-sky-300 -translate-x-1/2"></div>
-
                 <div id="experienceContainer" class="space-y-12 md:space-y-0">
                     <div class="experience-item md:flex md:items-start md:space-x-8">
                         <div class="md:w-1/2 md:pr-8 md:text-right">
                             <div class="bg-white p-6 rounded-lg shadow-xl hover:shadow-2xl transition-shadow duration-300 mb-4 md:mb-0">
-                                <h3 class="text-2xl font-semibold text-sky-700 mb-1">Birdeye</h3>
-                                <p class="text-sm text-slate-500 mb-2">Software Engineer (Frontend)</p>
-                                <p class="text-slate-600 italic mb-3">Elevating user experiences on a leading customer experience platform.</p>
+                                <div class="flex items-center md:justify-end mb-2">
+                                    <img src="https://placehold.co/100x100/e2e8f0/334155?text=Birdeye" alt="Birdeye Logo" class="company-logo" onerror="this.src='https://placehold.co/100x100/e2e8f0/334155?text=Logo'; this.onerror=null;">
+                                    <h3 class="text-2xl font-semibold text-sky-700">Birdeye</h3>
+                                </div>
+                                <p class="text-sm text-slate-500 mb-2 md:text-right">Software Engineer (Frontend)</p>
+                                <p class="text-slate-600 italic mb-3 md:text-right">Elevating user experiences on a leading customer experience platform.</p>
                                 <div class="achievement-card cursor-pointer" data-company="Birdeye">
                                     <strong class="text-slate-700">Frontend UI Development (React & Typescript)</strong>
                                     <div class="details text-sm text-slate-600 text-left md:text-right">Contributed to the frontend UI of Birdeye's platform, focusing on robust and scalable components.</div>
@@ -187,23 +311,7 @@
                                     <strong class="text-slate-700">Content Cloud Storage Platform</strong>
                                     <div class="details text-sm text-slate-600 text-left md:text-right">Implemented a cloud storage solution for images/videos, enabling users to directly manage and add content to social media posts within the platform.</div>
                                 </div>
-                                <div class="achievement-card cursor-pointer" data-company="Birdeye">
-                                    <strong class="text-slate-700">Content Tagging System</strong>
-                                    <div class="details text-sm text-slate-600 text-left md:text-right">Developed a tagging feature for content, significantly improving searchability and organization for users.</div>
-                                </div>
-                                <div class="achievement-card cursor-pointer" data-company="Birdeye">
-                                    <strong class="text-slate-700">Jest & React Testing Library Integration</strong>
-                                    <div class="details text-sm text-slate-600 text-left md:text-right">Integrated Jest test cases with React Testing Library across multiple components to ensure code quality and reliability.</div>
-                                </div>
-                                <div class="achievement-card cursor-pointer" data-company="Birdeye">
-                                    <strong class="text-slate-700">Data Visualization Dashboards</strong>
-                                    <div class="details text-sm text-slate-600 text-left md:text-right">Implemented several dashboards with tables and charts to improve data visualization and provide actionable insights.</div>
-                                </div>
-                                <div class="achievement-card cursor-pointer" data-company="Birdeye">
-                                    <strong class="text-slate-700">AI Summary Frontend (Firebase & WebSockets)</strong>
-                                    <div class="details text-sm text-slate-600 text-left md:text-right">Developed the frontend for an AI summary feature, integrating with backend services via Firebase and WebSockets, to offer users concise insights from large datasets.</div>
-                                </div>
-                                <p class="mt-3 text-xs text-amber-600">Key Tech: React, Typescript, Firebase, WebSockets, Jest</p>
+                                <p class="mt-3 text-xs text-amber-600 md:text-right">Key Tech: React, Typescript, Firebase, WebSockets, Jest</p>
                             </div>
                         </div>
                         <div class="hidden md:flex md:w-auto items-center justify-center">
@@ -214,30 +322,21 @@
                     <div class="experience-item md:flex md:flex-row-reverse md:items-start md:space-x-reverse md:space-x-8">
                          <div class="md:w-1/2 md:pl-8 md:text-left">
                             <div class="bg-white p-6 rounded-lg shadow-xl hover:shadow-2xl transition-shadow duration-300 mb-4 md:mb-0">
-                                <h3 class="text-2xl font-semibold text-sky-700 mb-1">OLX Group</h3>
+                                <div class="flex items-center mb-2">
+                                    <img src="https://placehold.co/100x100/e2e8f0/334155?text=OLX" alt="OLX Group Logo" class="company-logo" onerror="this.src='https://placehold.co/100x100/e2e8f0/334155?text=Logo'; this.onerror=null;">
+                                    <h3 class="text-2xl font-semibold text-sky-700">OLX Group</h3>
+                                </div>
                                 <p class="text-sm text-slate-500 mb-2">Software Engineer</p>
                                 <p class="text-slate-600 italic mb-3">Enhancing developer productivity and platform performance.</p>
                                 <div class="achievement-card cursor-pointer" data-company="OLX Group">
                                     <strong class="text-slate-700">Developer Platform (Docker & Kubernetes)</strong>
                                     <div class="details text-sm text-slate-600">Collaborated with SREs to develop a platform for managing, deploying, and testing applications in ephemeral environments using Docker and Kubernetes.</div>
                                 </div>
-                                <div class="achievement-card cursor-pointer" data-company="OLX Group">
-                                    <strong class="text-slate-700">Platform Optimization & UX Improvement</strong>
-                                    <div class="details text-sm text-slate-600">Optimized the platform for usability, leading to an improved user experience. Enhanced page load times by 30-40% through various techniques.</div>
-                                </div>
                                 <div class="chart-container my-4">
                                     <canvas id="olxPageLoadChart"></canvas>
                                 </div>
-                                <div class="achievement-card cursor-pointer" data-company="OLX Group">
-                                    <strong class="text-slate-700">Frontend Build Optimization</strong>
-                                    <div class="details text-sm text-slate-600">Reduced frontend build chunk size by 75-80%, improving page load times, especially on slower networks.</div>
-                                </div>
                                 <div class="chart-container my-4">
                                     <canvas id="olxChunkSizeChart"></canvas>
-                                </div>
-                                <div class="achievement-card cursor-pointer" data-company="OLX Group">
-                                    <strong class="text-slate-700">CI/CD Pipeline & Automated Changelog</strong>
-                                    <div class="details text-sm text-slate-600">Set up a new CI/CD pipeline in GitLab for automated testing, deployments, and rollbacks. Integrated automated changelog maintenance using Git trailers.</div>
                                 </div>
                                 <p class="mt-3 text-xs text-amber-600">Key Tech: Docker, Kubernetes, React, GitLab CI/CD, New Relic, Jest</p>
                             </div>
@@ -250,26 +349,17 @@
                     <div class="experience-item md:flex md:items-start md:space-x-8">
                         <div class="md:w-1/2 md:pr-8 md:text-right">
                             <div class="bg-white p-6 rounded-lg shadow-xl hover:shadow-2xl transition-shadow duration-300 mb-4 md:mb-0">
-                                <h3 class="text-2xl font-semibold text-sky-700 mb-1">Airtel Payments Bank</h3>
-                                <p class="text-sm text-slate-500 mb-2">Software Engineer</p>
-                                <p class="text-slate-600 italic mb-3">Building user-centric features for a large-scale financial platform.</p>
-                                <div class="achievement-card cursor-pointer" data-company="Airtel">
-                                    <strong class="text-slate-700">Complex Web Page Designs</strong>
-                                    <div class="details text-sm text-slate-600 text-left md:text-right">Worked with senior developers to build complex web page designs for Airtel's website, serving over 100,000 users daily.</div>
+                                <div class="flex items-center md:justify-end mb-2">
+                                    <img src="https://placehold.co/100x100/e2e8f0/334155?text=Airtel" alt="Airtel Payments Bank Logo" class="company-logo" onerror="this.src='https://placehold.co/100x100/e2e8f0/334155?text=Logo'; this.onerror=null;">
+                                    <h3 class="text-2xl font-semibold text-sky-700">Airtel Payments Bank</h3>
                                 </div>
-                                <div class="achievement-card cursor-pointer" data-company="Airtel">
-                                    <strong class="text-slate-700">New Help Functionality (Angular)</strong>
-                                    <div class="details text-sm text-slate-600 text-left md:text-right">Built a complete new help functionality for user assistance on an Angular-based platform.</div>
-                                </div>
+                                <p class="text-sm text-slate-500 mb-2 md:text-right">Software Engineer</p>
+                                <p class="text-slate-600 italic mb-3 md:text-right">Building user-centric features for a large-scale financial platform.</p>
                                 <div class="achievement-card cursor-pointer" data-company="Airtel">
                                     <strong class="text-slate-700">UI Enhancements & User Interaction (React)</strong>
                                     <div class="details text-sm text-slate-600 text-left md:text-right">Enhanced website UI (React) by collaborating with product managers, improving user interaction and reducing steps for specific operations.</div>
                                 </div>
-                                 <div class="achievement-card cursor-pointer" data-company="Airtel">
-                                    <strong class="text-slate-700">Fastag Replacement & Transaction History</strong>
-                                    <div class="details text-sm text-slate-600 text-left md:text-right">Implemented Fastag replacement functionality and designed a transaction history webview for Airtel Bank's official website.</div>
-                                </div>
-                                <p class="mt-3 text-xs text-amber-600">Key Tech: React, Angular, UI/UX Design</p>
+                                <p class="mt-3 text-xs text-amber-600 md:text-right">Key Tech: React, Angular, UI/UX Design</p>
                             </div>
                         </div>
                         <div class="hidden md:flex md:w-auto items-center justify-center">
@@ -281,20 +371,15 @@
                     <div class="experience-item md:flex md:flex-row-reverse md:items-start md:space-x-reverse md:space-x-8">
                          <div class="md:w-1/2 md:pl-8 md:text-left">
                             <div class="bg-white p-6 rounded-lg shadow-xl hover:shadow-2xl transition-shadow duration-300 mb-4 md:mb-0">
-                                <h3 class="text-2xl font-semibold text-sky-700 mb-1">Go Group</h3>
+                                <div class="flex items-center mb-2">
+                                     <img src="https://placehold.co/100x100/e2e8f0/334155?text=Go" alt="Go Group Logo" class="company-logo" onerror="this.src='https://placehold.co/100x100/e2e8f0/334155?text=Logo'; this.onerror=null;">
+                                    <h3 class="text-2xl font-semibold text-sky-700">Go Group</h3>
+                                </div>
                                 <p class="text-sm text-slate-500 mb-2">Software Engineer</p>
                                 <p class="text-slate-600 italic mb-3">Driving platform growth through SEO and reusable components.</p>
                                 <div class="achievement-card cursor-pointer" data-company="Go Group">
                                     <strong class="text-slate-700">SEO Page Development (React)</strong>
                                     <div class="details text-sm text-slate-600">Worked with product managers to build SEO pages to direct traffic to the React-based platform.</div>
-                                </div>
-                                <div class="achievement-card cursor-pointer" data-company="Go Group">
-                                    <strong class="text-slate-700">Reusable Project Components</strong>
-                                    <div class="details text-sm text-slate-600">Contributed to reusable project components, saving developer effort.</div>
-                                </div>
-                                <div class="achievement-card cursor-pointer" data-company="Go Group">
-                                    <strong class="text-slate-700">UI Design (Ant Design, Material UI, Next.js)</strong>
-                                    <div class="details text-sm text-slate-600">Worked on designing UI using Ant Design, Material UI, and Next.js framework.</div>
                                 </div>
                                 <p class="mt-3 text-xs text-amber-600">Key Tech: React, Next.js, Ant Design, Material UI, SEO</p>
                             </div>
@@ -308,18 +393,17 @@
                     <div class="experience-item md:flex md:items-start md:space-x-8">
                         <div class="md:w-1/2 md:pr-8 md:text-right">
                             <div class="bg-white p-6 rounded-lg shadow-xl hover:shadow-2xl transition-shadow duration-300">
-                                <h3 class="text-2xl font-semibold text-sky-700 mb-1">Indus Valley Partners</h3>
-                                <p class="text-sm text-slate-500 mb-2">Software Engineer</p>
-                                <p class="text-slate-600 italic mb-3">Developing and maintaining web applications with diverse technologies.</p>
+                                <div class="flex items-center md:justify-end mb-2">
+                                    <img src="https://placehold.co/100x100/e2e8f0/334155?text=IVP" alt="Indus Valley Partners Logo" class="company-logo" onerror="this.src='https://placehold.co/100x100/e2e8f0/334155?text=Logo'; this.onerror=null;">
+                                    <h3 class="text-2xl font-semibold text-sky-700">Indus Valley Partners</h3>
+                                </div>
+                                <p class="text-sm text-slate-500 mb-2 md:text-right">Software Engineer</p>
+                                <p class="text-slate-600 italic mb-3 md:text-right">Developing and maintaining web applications with diverse technologies.</p>
                                 <div class="achievement-card cursor-pointer" data-company="IVP">
                                     <strong class="text-slate-700">Configuration Changes (Full Stack)</strong>
                                     <div class="details text-sm text-slate-600 text-left md:text-right">Implemented multiple configuration changes in in-house products using React.js, Node.js, SQL Server, and MongoDB.</div>
                                 </div>
-                                <div class="achievement-card cursor-pointer" data-company="IVP">
-                                    <strong class="text-slate-700">Third-Party API Integration (JWT)</strong>
-                                    <div class="details text-sm text-slate-600 text-left md:text-right">Designed and integrated third-party APIs, authenticating various channels using JSON Web Tokens.</div>
-                                </div>
-                                <p class="mt-3 text-xs text-amber-600">Key Tech: React.js, Node.js, SQL Server, MongoDB, JWT</p>
+                                <p class="mt-3 text-xs text-amber-600 md:text-right">Key Tech: React.js, Node.js, SQL Server, MongoDB, JWT</p>
                             </div>
                         </div>
                         <div class="hidden md:flex md:w-auto items-center justify-center">
@@ -339,7 +423,7 @@
                 A collection of technologies and tools I wield to build robust and efficient applications. This interactive galaxy represents my core competencies and areas of expertise. Hover or click on skills to see more.
             </p>
             <div id="skillGalaxy" class="relative min-h-[400px] md:min-h-[500px] w-full max-w-3xl mx-auto rounded-lg p-4">
-                </div>
+            </div>
         </div>
     </section>
 
@@ -370,8 +454,11 @@
             </p>
             <div class="grid md:grid-cols-2 gap-8">
                 <div class="bg-white p-8 rounded-lg shadow-xl">
-                    <h3 class="text-2xl font-semibold text-sky-700 mb-4">Education</h3>
-                    <div class="mb-6">
+                    <div class="flex flex-col items-center md:items-start text-center md:text-left">
+                        <img src="https://placehold.co/150x150/e2e8f0/334155?text=Chitkara" alt="Chitkara University Logo" class="institution-logo" onerror="this.src='https://placehold.co/150x150/e2e8f0/334155?text=Logo'; this.onerror=null;">
+                        <h3 class="text-2xl font-semibold text-sky-700 mb-1 mt-2">Education</h3>
+                    </div>
+                    <div class="mt-3">
                         <h4 class="text-xl font-medium text-slate-700">Chitkara University, Rajpura, Punjab</h4>
                         <p class="text-slate-600">Bachelor of Engineering (B.E.) - Computer Science and Engineering</p>
                         <p class="text-sm text-slate-500">2016 - 2020</p>
@@ -380,13 +467,18 @@
                     </div>
                 </div>
                 <div class="bg-white p-8 rounded-lg shadow-xl">
-                    <h3 class="text-2xl font-semibold text-sky-700 mb-4">Certifications</h3>
-                    <ul class="space-y-4">
-                        <li class="text-slate-600">
-                            <strong class="text-slate-700">Udacity:</strong> Front End Web Development - 1
+                     <div class="flex flex-col items-center md:items-start text-center md:text-left">
+                        <img src="https://placehold.co/150x150/e2e8f0/334155?text=Certs" alt="Certifications Icon" class="institution-logo" onerror="this.src='https://placehold.co/150x150/e2e8f0/334155?text=Logo'; this.onerror=null;">
+                        <h3 class="text-2xl font-semibold text-sky-700 mb-1 mt-2">Certifications</h3>
+                    </div>
+                    <ul class="space-y-4 mt-3">
+                        <li class="text-slate-600 flex items-center">
+                            <img src="https://placehold.co/80x80/e2e8f0/334155?text=Udacity" alt="Udacity Logo" class="company-logo w-8 h-8 mr-2" onerror="this.src='https://placehold.co/80x80/e2e8f0/334155?text=Logo'; this.onerror=null;">
+                            <strong class="text-slate-700">Udacity:</strong>&nbsp;Front End Web Development - 1
                         </li>
-                        <li class="text-slate-600">
-                            <strong class="text-slate-700">Udemy:</strong> The Complete React Native + Hooks Course
+                        <li class="text-slate-600 flex items-center">
+                            <img src="https://placehold.co/80x80/e2e8f0/334155?text=Udemy" alt="Udemy Logo" class="company-logo w-8 h-8 mr-2" onerror="this.src='https://placehold.co/80x80/e2e8f0/334155?text=Logo'; this.onerror=null;">
+                            <strong class="text-slate-700">Udemy:</strong>&nbsp;The Complete React Native + Hooks Course
                         </li>
                     </ul>
                 </div>
@@ -417,95 +509,137 @@
 
     <footer class="text-center py-8 bg-slate-900 text-slate-400 text-sm">
         <p>&copy; <span id="currentYear"></span> Gursimran Singh. All rights reserved.</p>
-        <p>Designed & Developed with a passion for code.</p>
+        <p>Designed & Developed with a passion for code. &lt;/&gt;</p>
     </footer>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Navigation
+            console.log("%cWelcome, fellow developer! </> Gursimran Singh's Interactive Portfolio Loaded.", "color: #0ea5e9; font-size: 14px; font-family: monospace;");
+
             const hamburgerButton = document.getElementById('hamburgerButton');
             const mobileMenu = document.getElementById('mobileMenu');
-            const navLinks = document.querySelectorAll('#navMenu a, #mobileMenu a');
+            const navMenuLinks = document.querySelectorAll('#navMenu a.nav-link');
+            const mobileMenuLinks = document.querySelectorAll('#mobileMenu a.nav-link-mobile');
+            const mainNav = document.getElementById('mainNav');
+            const heroSection = document.getElementById('hero');
+            let navVisible = false;
 
-            hamburgerButton.addEventListener('click', () => {
-                mobileMenu.classList.toggle('hidden');
+            function setActiveLink(clickedLink, linkCollection) {
+                linkCollection.forEach(link => link.classList.remove('active', 'active-mobile'));
+                clickedLink.classList.add(linkCollection === navMenuLinks ? 'active' : 'active-mobile');
+            }
+
+            navMenuLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    setActiveLink(e.currentTarget, navMenuLinks);
+                });
             });
-
-            navLinks.forEach(link => {
-                link.addEventListener('click', () => {
-                    if (!mobileMenu.classList.contains('hidden')) {
+            mobileMenuLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    setActiveLink(e.currentTarget, mobileMenuLinks);
+                     if (!mobileMenu.classList.contains('hidden')) {
                         mobileMenu.classList.add('hidden');
                     }
                 });
             });
+
+            hamburgerButton.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
             
-            const mainNav = document.getElementById('mainNav');
-            let lastScrollTop = 0;
             window.addEventListener('scroll', function() {
-                let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-                if (scrollTop > lastScrollTop && scrollTop > 100) { 
-                    mainNav.style.top = '-100px'; 
-                } else { 
-                    mainNav.style.top = '0';
+                const heroBottom = heroSection.getBoundingClientRect().bottom;
+                const showNavThreshold = 50; 
+
+                if (heroBottom < showNavThreshold && !navVisible) {
+                    mainNav.style.opacity = '1';
+                    mainNav.style.transform = 'translateY(0)';
+                    navVisible = true;
+                } else if (heroBottom >= showNavThreshold && navVisible) { 
+                    mainNav.style.opacity = '0';
+                    mainNav.style.transform = 'translateY(-100%)';
+                    navVisible = false;
                 }
-                lastScrollTop = scrollTop <= 0 ? 0 : scrollTop; 
-            }, false);
-
-
-            const heroNameElement = document.getElementById('heroName');
-            const nameToType = "Gursimran Singh";
-            let i = 0;
-            function typeName() {
-                if (i < nameToType.length) {
-                    heroNameElement.innerHTML += nameToType.charAt(i);
-                    i++;
-                    setTimeout(typeName, 100);
-                } else {
-                    heroNameElement.classList.add('typing-effect'); 
-                     heroNameElement.style.borderRight = '.15em solid orange';
-                }
-            }
-            typeName(); 
-
-            const keywordContainer = document.getElementById('keywordContainer');
-            const keywords = ["React", "TypeScript", "JavaScript", "Kubernetes", "Docker", "Frontend", "Optimization", "Firebase", "AWS", "CI/CD", "Performance", "UI/UX", "Node.js", "SQL", "MongoDB", "Agile"];
-            keywords.forEach(keywordText => {
-                const keywordElement = document.createElement('span');
-                keywordElement.textContent = keywordText;
-                keywordElement.classList.add('keyword', 'text-slate-600', 'font-medium', 'p-2', 'rounded');
-                keywordElement.style.fontSize = `${Math.random() * 1 + 0.8}rem`; 
-                keywordElement.style.top = `${Math.random() * 90}%`;
-                keywordElement.style.left = `${Math.random() * 90}%`;
-                keywordElement.style.opacity = `${Math.random() * 0.5 + 0.1}`; 
-                keywordContainer.appendChild(keywordElement);
             });
 
-            keywordContainer.addEventListener('mousemove', function(e) {
-                const rect = keywordContainer.getBoundingClientRect();
-                const x = e.clientX - rect.left;
-                const y = e.clientY - rect.top;
 
-                Array.from(keywordContainer.children).forEach(child => {
-                    const dx = (child.offsetLeft + child.offsetWidth / 2) - x;
-                    const dy = (child.offsetTop + child.offsetHeight / 2) - y;
-                    const distance = Math.sqrt(dx * dx + dy * dy);
-                    const maxDistance = 300; 
+            setTimeout(animateKeywordsIn, 2500); 
+
+            function animateKeywordsIn() {
+                const keywordContainer = document.getElementById('keywordContainer');
+                if (!keywordContainer) return;
+                const keywords = ["React", "TypeScript", "JavaScript", "Kubernetes", "Docker", "Frontend", "Optimization", "Firebase", "AWS", "CI/CD", "Performance", "UI/UX", "Node.js", "SQL", "MongoDB", "Agile"];
+                const keywordElements = [];
+
+                keywords.forEach(keywordText => {
+                    const keywordElement = document.createElement('span');
+                    keywordElement.textContent = keywordText;
+                    keywordElement.classList.add('keyword', 'text-slate-400', 'font-medium', 'p-2', 'rounded', 'bg-slate-700', 'bg-opacity-30');
+                    keywordElement.style.fontSize = `${Math.random() * 0.75 + 0.75}rem`; 
+                    keywordElement.style.top = `${Math.random() * 90}%`;
+                    keywordElement.style.left = `${Math.random() * 90}%`;
                     
-                    if (distance < maxDistance) {
-                        const moveFactor = (maxDistance - distance) / maxDistance * 20; 
-                        const moveX = (dx / distance) * moveFactor;
-                        const moveY = (dy / distance) * moveFactor;
-                        child.style.transform = `translate(${moveX}px, ${moveY}px)`;
-                        child.style.opacity = `${Math.random() * 0.3 + 0.7}`; 
-                    } else {
-                        child.style.transform = 'translate(0, 0)';
-                        child.style.opacity = `${parseFloat(child.dataset.initialOpacity) || (Math.random() * 0.5 + 0.1)}`;
-                    }
+                    keywordContainer.appendChild(keywordElement);
+                    keywordElements.push(keywordElement);
                 });
-            });
-            Array.from(keywordContainer.children).forEach(child => {
-                child.dataset.initialOpacity = child.style.opacity;
-            });
+
+                keywordElements.forEach((el, index) => {
+                    setTimeout(() => {
+                        const randomOpacity = Math.random() * 0.3 + 0.5; 
+                        el.style.opacity = randomOpacity;
+                        el.style.transform = 'translateY(0) scale(1)';
+                        el.dataset.initialOpacity = randomOpacity;
+                        
+                        el.classList.add('floating');
+                        el.style.animationDuration = `${Math.random() * 10 + 10}s`; 
+                        el.style.animationDelay = `${Math.random() * 2}s`;
+
+                    }, index * 150); 
+                });
+            }
+            
+            const keywordContainer = document.getElementById('keywordContainer');
+            if (keywordContainer) {
+                keywordContainer.addEventListener('mousemove', function(e) {
+                    const rect = keywordContainer.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+
+                    Array.from(keywordContainer.children).forEach(child => {
+                        if (!child.classList.contains('keyword')) return; 
+                        const dx = (child.offsetLeft + child.offsetWidth / 2) - x;
+                        const dy = (child.offsetTop + child.offsetHeight / 2) - y;
+                        const distance = Math.sqrt(dx * dx + dy * dy);
+                        const maxDistance = 250; 
+                        
+                        if (distance < maxDistance) {
+                            const moveFactor = (maxDistance - distance) / maxDistance * 15; 
+                            const moveX = (dx / distance) * moveFactor;
+                            const moveY = (dy / distance) * moveFactor;
+                            
+                            child.style.animationName = 'none'; 
+                            child.style.transform = `translateX(${moveX}px) translateY(${moveY}px) scale(1.05)`;
+                            child.style.opacity = `${Math.random() * 0.2 + 0.8}`; 
+                        } else {
+                            if (child.classList.contains('floating')) { 
+                               child.style.animationName = 'continuousFloat';
+                            } else {
+                               child.style.transform = 'translate(0, 0) scale(1)'; 
+                            }
+                            child.style.opacity = `${parseFloat(child.dataset.initialOpacity) || (Math.random() * 0.3 + 0.5)}`;
+                        }
+                    });
+                });
+                 keywordContainer.addEventListener('mouseleave', function() { 
+                    Array.from(keywordContainer.children).forEach(child => {
+                        if (child.classList.contains('keyword') && child.classList.contains('floating')) {
+                            child.style.animationName = 'continuousFloat';
+                            child.style.opacity = `${parseFloat(child.dataset.initialOpacity) || (Math.random() * 0.3 + 0.5)}`;
+                        }
+                    });
+                });
+            }
+
 
             const achievementCards = document.querySelectorAll('.achievement-card');
             achievementCards.forEach(card => {
@@ -560,67 +694,85 @@
                 });
             }
             
-            const skillGalaxyContainer = document.getElementById('skillGalaxy');
-            const mainSkills = [
-                { name: 'React.Js', size: 3, color: 'bg-sky-500' }, { name: 'JavaScript', size: 3, color: 'bg-amber-500' },
-                { name: 'TypeScript', size: 2.5, color: 'bg-blue-500' }, { name: 'HTML', size: 2, color: 'bg-orange-500' },
-                { name: 'CSS', size: 2, color: 'bg-indigo-500' }, { name: 'Kubernetes', size: 2.5, color: 'bg-blue-700' },
-                { name: 'Docker', size: 2.5, color: 'bg-sky-400' }, { name: 'Node.js', size: 2, color: 'bg-green-500' },
-            ];
-            const otherSkills = [
-                { name: 'Angular', size: 1.5, color: 'bg-red-500' }, { name: 'Redux', size: 1.5, color: 'bg-purple-500' },
-                { name: 'Hooks', size: 1.8, color: 'bg-teal-500' }, { name: 'Firebase', size: 1.8, color: 'bg-yellow-500' },
-                { name: 'AWS', size: 1.8, color: 'bg-orange-600' }, { name: 'Git', size: 1.5, color: 'bg-slate-600' },
-                { name: 'REST APIs', size: 1.5, color: 'bg-cyan-500' }, { name: 'WebSocket', size: 1.5, color: 'bg-lime-500' },
-                { name: 'SQL', size: 1.5, color: 'bg-sky-700' }, { name: 'MongoDB', size: 1.5, color: 'bg-green-700' },
-                { name: 'Data Structures', size: 1.5, color: 'bg-pink-500' }
-            ];
+             function initializeSkillGalaxy(attempt = 1) {
+                const skillGalaxyContainer = document.getElementById('skillGalaxy');
+                if (!skillGalaxyContainer) return;
 
-            const allSkills = [...mainSkills, ...otherSkills];
-            if (skillGalaxyContainer) {
                 const galaxyWidth = skillGalaxyContainer.offsetWidth;
                 const galaxyHeight = skillGalaxyContainer.offsetHeight;
 
-                allSkills.forEach(skill => {
-                    const el = document.createElement('div');
-                    el.textContent = skill.name;
-                    el.className = `skill-node absolute text-white text-xs md:text-sm font-semibold p-2 md:p-3 rounded-full shadow-lg cursor-pointer transition-all duration-300 ease-in-out hover:scale-110 hover:shadow-xl ${skill.color}`;
-                    el.style.width = `${skill.size * 25}px`; 
-                    el.style.height = `${skill.size * 25}px`;
-                    el.style.lineHeight = `${skill.size * 25 - (skill.size > 2 ? 12 : 8)}px`; 
-                    el.style.textAlign = 'center';
-                    el.style.borderRadius = '50%';
-                    
-                    let topPos, leftPos, attempts = 0, placed = false;
-                    const maxAttempts = 50;
-                    const elements = Array.from(skillGalaxyContainer.children);
+                if (galaxyWidth > 0 && galaxyHeight > 0) {
+                    const mainSkills = [
+                        { name: 'React.Js', size: 3.2, color: 'bg-sky-500' }, 
+                        { name: 'JavaScript', size: 3.5, color: 'bg-amber-500' },
+                        { name: 'TypeScript', size: 3.5, color: 'bg-blue-500' }, 
+                        { name: 'HTML', size: 2.5, color: 'bg-orange-500' },
+                        { name: 'CSS', size: 2.5, color: 'bg-indigo-500' }, 
+                        { name: 'Kubernetes', size: 3.5, color: 'bg-blue-700' },
+                        { name: 'Docker', size: 3, color: 'bg-sky-400' }, 
+                        { name: 'Node.js', size: 3, color: 'bg-green-500' },
+                    ];
+                    const otherSkills = [
+                        { name: 'Angular', size: 2.8, color: 'bg-red-500' }, 
+                        { name: 'Redux', size: 2.5, color: 'bg-purple-500' },
+                        { name: 'Hooks', size: 2.5, color: 'bg-teal-500' }, 
+                        { name: 'Firebase', size: 3, color: 'bg-yellow-500' },
+                        { name: 'AWS', size: 2.5, color: 'bg-orange-600' }, 
+                        { name: 'Git', size: 2.5, color: 'bg-slate-600' },
+                        { name: 'REST APIs', size: 3.2, color: 'bg-cyan-500' }, 
+                        { name: 'WebSocket', size: 3.2, color: 'bg-lime-500' },
+                        { name: 'SQL', size: 2.5, color: 'bg-sky-700' }, 
+                        { name: 'MongoDB', size: 3, color: 'bg-green-700' },
+                        { name: 'Data Structures', size: 4, color: 'bg-pink-500' }
+                    ];
+                    const allSkills = [...mainSkills, ...otherSkills];
+                    skillGalaxyContainer.innerHTML = ''; 
 
-                    while (!placed && attempts < maxAttempts) {
-                        topPos = Math.random() * (galaxyHeight - (skill.size * 25));
-                        leftPos = Math.random() * (galaxyWidth - (skill.size * 25));
-                        placed = true; 
+                    allSkills.forEach((skill, index) => {
+                        const el = document.createElement('div');
+                        el.textContent = skill.name;
+                        el.className = `skill-node absolute text-white text-xs md:text-sm font-semibold rounded-full shadow-lg cursor-pointer transition-all duration-300 ease-in-out hover:scale-110 hover:shadow-xl ${skill.color}`;
+                        el.style.width = `${skill.size * 28}px`; 
+                        el.style.height = `${skill.size * 28}px`;
+                        
+                        const bubbleDiameter = skill.size * 28;
+                        const padding = 5; 
 
-                        for (const existingEl of elements) {
-                            const existingRect = existingEl.getBoundingClientRect();
-                            const newRect = { top: topPos, left: leftPos, width: skill.size * 25, height: skill.size * 25 };
+                        const maxLeft = galaxyWidth - bubbleDiameter - (2 * padding);
+                        const maxTop = galaxyHeight - bubbleDiameter - (2 * padding);
+                        
+                        const leftPosPx = padding + (Math.random() * maxLeft);
+                        const topPosPx = padding + (Math.random() * maxTop);
+
+                        el.style.left = `${(leftPosPx / galaxyWidth) * 100}%`;
+                        el.style.top = `${(topPosPx / galaxyHeight) * 100}%`;
+                        
+                        // Apply initial opacity and transform for fade-in effect
+                        el.style.opacity = '0';
+                        el.style.transform = 'translateY(15px) scale(0.9)';
+
+                        setTimeout(() => {
+                            const randomOpacity = Math.random() * 0.3 + 0.7; // Make them a bit more visible
+                            el.style.opacity = randomOpacity;
+                            el.style.transform = 'translateY(0) scale(1)';
+                            el.dataset.initialOpacity = randomOpacity;
                             
-                            if (!(newRect.left + newRect.width < existingRect.left || 
-                                  newRect.left > existingRect.left + existingRect.width ||
-                                  newRect.top + newRect.height < existingRect.top ||
-                                  newRect.top > existingRect.top + existingRect.height)) {
-                                placed = false;
-                                break;
-                            }
-                        }
-                        attempts++;
-                    }
-                    
-                    el.style.top = `${topPos || Math.random() * 70 + 10}%`; 
-                    el.style.left = `${leftPos || Math.random() * 70 + 10}%`;
+                            el.classList.add('floating');
+                            el.style.animationDuration = `${Math.random() * 12 + 12}s`; 
+                            el.style.animationDelay = `${Math.random() * 5}s`;    
+                        }, index * 100); // Staggered appearance for skill bubbles
 
-                    skillGalaxyContainer.appendChild(el);
-                });
+
+                        skillGalaxyContainer.appendChild(el);
+                    });
+                } else if (attempt < 5) { 
+                    console.warn(`SkillGalaxy container has no dimensions yet (Attempt ${attempt}). Retrying...`);
+                    setTimeout(() => initializeSkillGalaxy(attempt + 1), 200 * attempt); 
+                } else {
+                     console.error("SkillGalaxy container dimensions not available after multiple attempts. Skills not positioned.");
+                }
             }
+            initializeSkillGalaxy(); 
 
             document.getElementById('currentYear').textContent = new Date().getFullYear();
         });
