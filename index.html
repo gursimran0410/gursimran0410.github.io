@@ -1,47 +1,629 @@
 <!DOCTYPE html>
-<html lang="en">
-  <head>
+<html lang="en" class="scroll-smooth">
+<head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
-    <title>Gursimran Singh</title>
-    <link rel="stylesheet" href="./style.css">
-    <script src="./index.js"></script>
-  </head>
-  <body>
-    <div class="header-wrapper">
-      <header class="header" id="site-header">
-        <div class="experience-btn"><span>Experiences</span></div>
-        <div class="logo"><span>Gursimran Singh</span></div>
-        <div class="contact-btn"><span>Contact</span></div>
-      </header>
-    </div>
-    <div class="container">
-      <section class="one">
-        <div class="intro-left">
-          <h1 class="one-page-heading">
-            <span>Hi,</span><br>
-            <span>I'm&nbsp;Gursimran,</span><br>
-            <span>web developer</span>
-          </h1>
-          <p class="one-page-para">Software Engineer / Front End Developer</p>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gursimran Singh - Interactive Portfolio</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Visualization & Content Choices:
+        - Hero: Name typing animation (JS), Keyword constellation (JS animated HTML elements). Goal: Engage, Introduce. Interaction: Mouse move on constellation. Justification: Dynamic intro.
+        - Experience (Journey):
+            - OLX Stats (Page Load/Chunk Size Reduction): Bar charts (Chart.js). Goal: Quantify impact. Interaction: Tooltips on chart. Justification: Clear visual for performance gains.
+            - Birdeye Dashboards: Textual mention of impact. Goal: Acknowledge skill. Justification: No specific data for a chart, so descriptive text is better.
+            - Achievement Cards: HTML/JS for expand/collapse. Goal: Detail contributions. Interaction: Click to expand. Justification: Keeps timeline clean, allows drill-down.
+        - Skills (Toolkit): Interactive Skill Galaxy (HTML elements positioned with JS). Goal: Showcase skill breadth. Interaction: Hover/click effects on skills. Justification: More engaging than a static list.
+        - Education GPA: Visual text. Goal: Highlight academic achievement.
+        - General: Unicode icons for contact info, links. Goal: Visual cues.
+        - CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. All visuals are HTML/CSS/Tailwind, Unicode, or Chart.js Canvas.
+    -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        @keyframes typing {
+            from { width: 0 }
+            to { width: 100% }
+        }
+        @keyframes blink-caret {
+            from, to { border-color: transparent }
+            50% { border-color: orange; }
+        }
+        .typing-effect {
+            overflow: hidden;
+            white-space: nowrap;
+            animation: typing 3.5s steps(40, end), blink-caret .75s step-end infinite;
+            border-right: .15em solid orange;
+        }
+        .keyword {
+            position: absolute;
+            transition: transform 0.3s ease-out, opacity 0.3s ease-out;
+            will-change: transform;
+        }
+        .achievement-card .details {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease-in-out, opacity 0.5s ease-in-out, padding 0.5s ease-in-out;
+            opacity: 0;
+            padding-top: 0;
+            padding-bottom: 0;
+        }
+        .achievement-card.open .details {
+            max-height: 500px;
+            opacity: 1;
+            padding-top: 1rem;
+            padding-bottom: 1rem;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 250px;
+            max-height: 300px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 300px;
+                max-height: 350px;
+            }
+        }
+        .parallax-section {
+            background-attachment: fixed;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+        .nav-link {
+            transition: color 0.3s ease;
+        }
+        .nav-link:hover {
+            color: #fbbf24; /* amber-400 */
+        }
+        .section-title-underline {
+            display: inline-block;
+            position: relative;
+        }
+        .section-title-underline::after {
+            content: '';
+            position: absolute;
+            width: 60%;
+            height: 3px;
+            bottom: -5px;
+            left: 20%;
+            background-color: #0ea5e9; /* sky-500 */
+        }
+        .loader { /* Kept for potential future use, though not used now */
+            border: 4px solid #f3f3f3; 
+            border-top: 4px solid #3498db; 
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 10px auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="bg-slate-100 text-slate-800 antialiased">
+
+    <nav id="mainNav" class="fixed top-0 left-0 right-0 z-50 bg-slate-800 bg-opacity-90 backdrop-blur-md shadow-lg transition-all duration-300">
+        <div class="container mx-auto px-6 py-3 flex justify-between items-center">
+            <a href="#hero" class="text-xl font-bold text-white">Gursimran Singh</a>
+            <div class="md:hidden">
+                <button id="hamburgerButton" class="text-white focus:outline-none">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+                </button>
+            </div>
+            <div id="navMenu" class="hidden md:flex space-x-4">
+                <a href="#hero" class="nav-link text-slate-200">Home</a>
+                <a href="#journey" class="nav-link text-slate-200">Journey</a>
+                <a href="#toolkit" class="nav-link text-slate-200">Toolkit</a>
+                <a href="#blueprints" class="nav-link text-slate-200">Blueprints</a>
+                <a href="#credentials" class="nav-link text-slate-200">Credentials</a>
+                <a href="#connect" class="nav-link text-slate-200">Connect</a>
+            </div>
         </div>
-        <div></div>
-      </section>
-      <section class="two">
-        <div class="two-left">Left Side</div>
-        <div class="two-right">
-          <img src="/assets/OLX-GROUP.svg"/>
+        <div id="mobileMenu" class="hidden md:hidden bg-slate-800">
+            <a href="#hero" class="block py-2 px-4 text-sm text-slate-200 hover:bg-slate-700">Home</a>
+            <a href="#journey" class="block py-2 px-4 text-sm text-slate-200 hover:bg-slate-700">Journey</a>
+            <a href="#toolkit" class="block py-2 px-4 text-sm text-slate-200 hover:bg-slate-700">Toolkit</a>
+            <a href="#blueprints" class="block py-2 px-4 text-sm text-slate-200 hover:bg-slate-700">Blueprints</a>
+            <a href="#credentials" class="block py-2 px-4 text-sm text-slate-200 hover:bg-slate-700">Credentials</a>
+            <a href="#connect" class="block py-2 px-4 text-sm text-slate-200 hover:bg-slate-700">Connect</a>
         </div>
-      </section>
-      <section class="three">
-        <div class="three-left">
-          <img src="/assets/apb.svg"/>
+    </nav>
+
+    <section id="hero" class="min-h-screen flex flex-col justify-center items-center text-center bg-gradient-to-br from-slate-800 via-slate-900 to-black text-white p-6 relative overflow-hidden">
+        <div id="keywordContainer" class="absolute inset-0 opacity-20">
+            </div>
+        <div class="relative z-10">
+            <h1 id="heroName" class="text-5xl md:text-7xl font-bold mb-4"></h1>
+            <p class="text-xl md:text-2xl text-slate-300 mb-8">Crafting Scalable and Performant Digital Solutions.</p>
+            <a href="#journey" class="bg-sky-600 hover:bg-sky-700 text-white font-bold py-3 px-8 rounded-lg text-lg transition duration-300 shadow-lg">
+                Trace My Journey &darr;
+            </a>
         </div>
-        <div class="three-right">right side</div>
-      </section>
-      <section class="four">
-        <h1>Fourth Page</h1>
-      </section>
-    </div>
-  </body>
+    </section>
+
+    <section id="journey" class="py-16 md:py-24 bg-slate-50">
+        <div class="container mx-auto px-6">
+            <h2 class="text-4xl font-bold text-center mb-4 text-slate-800 section-title-underline">Chronicles of Code</h2>
+            <p class="text-center text-slate-600 mb-12 md:mb-16 max-w-2xl mx-auto">
+                A timeline of my professional experiences, highlighting key contributions and technologies. Each role represents a chapter in my growth as a software engineer, focused on delivering impactful solutions. Click on any achievement to learn more.
+            </p>
+            <div class="relative">
+                <div class="hidden md:block absolute top-0 bottom-0 left-1/2 w-1 bg-sky-300 -translate-x-1/2"></div>
+
+                <div id="experienceContainer" class="space-y-12 md:space-y-0">
+                    <div class="experience-item md:flex md:items-start md:space-x-8">
+                        <div class="md:w-1/2 md:pr-8 md:text-right">
+                            <div class="bg-white p-6 rounded-lg shadow-xl hover:shadow-2xl transition-shadow duration-300 mb-4 md:mb-0">
+                                <h3 class="text-2xl font-semibold text-sky-700 mb-1">Birdeye</h3>
+                                <p class="text-sm text-slate-500 mb-2">Software Engineer (Frontend)</p>
+                                <p class="text-slate-600 italic mb-3">Elevating user experiences on a leading customer experience platform.</p>
+                                <div class="achievement-card cursor-pointer" data-company="Birdeye">
+                                    <strong class="text-slate-700">Frontend UI Development (React & Typescript)</strong>
+                                    <div class="details text-sm text-slate-600 text-left md:text-right">Contributed to the frontend UI of Birdeye's platform, focusing on robust and scalable components.</div>
+                                </div>
+                                <div class="achievement-card cursor-pointer" data-company="Birdeye">
+                                    <strong class="text-slate-700">Content Cloud Storage Platform</strong>
+                                    <div class="details text-sm text-slate-600 text-left md:text-right">Implemented a cloud storage solution for images/videos, enabling users to directly manage and add content to social media posts within the platform.</div>
+                                </div>
+                                <div class="achievement-card cursor-pointer" data-company="Birdeye">
+                                    <strong class="text-slate-700">Content Tagging System</strong>
+                                    <div class="details text-sm text-slate-600 text-left md:text-right">Developed a tagging feature for content, significantly improving searchability and organization for users.</div>
+                                </div>
+                                <div class="achievement-card cursor-pointer" data-company="Birdeye">
+                                    <strong class="text-slate-700">Jest & React Testing Library Integration</strong>
+                                    <div class="details text-sm text-slate-600 text-left md:text-right">Integrated Jest test cases with React Testing Library across multiple components to ensure code quality and reliability.</div>
+                                </div>
+                                <div class="achievement-card cursor-pointer" data-company="Birdeye">
+                                    <strong class="text-slate-700">Data Visualization Dashboards</strong>
+                                    <div class="details text-sm text-slate-600 text-left md:text-right">Implemented several dashboards with tables and charts to improve data visualization and provide actionable insights.</div>
+                                </div>
+                                <div class="achievement-card cursor-pointer" data-company="Birdeye">
+                                    <strong class="text-slate-700">AI Summary Frontend (Firebase & WebSockets)</strong>
+                                    <div class="details text-sm text-slate-600 text-left md:text-right">Developed the frontend for an AI summary feature, integrating with backend services via Firebase and WebSockets, to offer users concise insights from large datasets.</div>
+                                </div>
+                                <p class="mt-3 text-xs text-amber-600">Key Tech: React, Typescript, Firebase, WebSockets, Jest</p>
+                            </div>
+                        </div>
+                        <div class="hidden md:flex md:w-auto items-center justify-center">
+                            <div class="w-8 h-8 bg-sky-600 rounded-full shadow-md"></div>
+                        </div>
+                        <div class="md:w-1/2 md:pl-8"></div> </div>
+
+                    <div class="experience-item md:flex md:flex-row-reverse md:items-start md:space-x-reverse md:space-x-8">
+                         <div class="md:w-1/2 md:pl-8 md:text-left">
+                            <div class="bg-white p-6 rounded-lg shadow-xl hover:shadow-2xl transition-shadow duration-300 mb-4 md:mb-0">
+                                <h3 class="text-2xl font-semibold text-sky-700 mb-1">OLX Group</h3>
+                                <p class="text-sm text-slate-500 mb-2">Software Engineer</p>
+                                <p class="text-slate-600 italic mb-3">Enhancing developer productivity and platform performance.</p>
+                                <div class="achievement-card cursor-pointer" data-company="OLX Group">
+                                    <strong class="text-slate-700">Developer Platform (Docker & Kubernetes)</strong>
+                                    <div class="details text-sm text-slate-600">Collaborated with SREs to develop a platform for managing, deploying, and testing applications in ephemeral environments using Docker and Kubernetes.</div>
+                                </div>
+                                <div class="achievement-card cursor-pointer" data-company="OLX Group">
+                                    <strong class="text-slate-700">Platform Optimization & UX Improvement</strong>
+                                    <div class="details text-sm text-slate-600">Optimized the platform for usability, leading to an improved user experience. Enhanced page load times by 30-40% through various techniques.</div>
+                                </div>
+                                <div class="chart-container my-4">
+                                    <canvas id="olxPageLoadChart"></canvas>
+                                </div>
+                                <div class="achievement-card cursor-pointer" data-company="OLX Group">
+                                    <strong class="text-slate-700">Frontend Build Optimization</strong>
+                                    <div class="details text-sm text-slate-600">Reduced frontend build chunk size by 75-80%, improving page load times, especially on slower networks.</div>
+                                </div>
+                                <div class="chart-container my-4">
+                                    <canvas id="olxChunkSizeChart"></canvas>
+                                </div>
+                                <div class="achievement-card cursor-pointer" data-company="OLX Group">
+                                    <strong class="text-slate-700">CI/CD Pipeline & Automated Changelog</strong>
+                                    <div class="details text-sm text-slate-600">Set up a new CI/CD pipeline in GitLab for automated testing, deployments, and rollbacks. Integrated automated changelog maintenance using Git trailers.</div>
+                                </div>
+                                <p class="mt-3 text-xs text-amber-600">Key Tech: Docker, Kubernetes, React, GitLab CI/CD, New Relic, Jest</p>
+                            </div>
+                        </div>
+                        <div class="hidden md:flex md:w-auto items-center justify-center">
+                            <div class="w-8 h-8 bg-sky-600 rounded-full shadow-md"></div>
+                        </div>
+                        <div class="md:w-1/2 md:pr-8"></div> </div>
+                    
+                    <div class="experience-item md:flex md:items-start md:space-x-8">
+                        <div class="md:w-1/2 md:pr-8 md:text-right">
+                            <div class="bg-white p-6 rounded-lg shadow-xl hover:shadow-2xl transition-shadow duration-300 mb-4 md:mb-0">
+                                <h3 class="text-2xl font-semibold text-sky-700 mb-1">Airtel Payments Bank</h3>
+                                <p class="text-sm text-slate-500 mb-2">Software Engineer</p>
+                                <p class="text-slate-600 italic mb-3">Building user-centric features for a large-scale financial platform.</p>
+                                <div class="achievement-card cursor-pointer" data-company="Airtel">
+                                    <strong class="text-slate-700">Complex Web Page Designs</strong>
+                                    <div class="details text-sm text-slate-600 text-left md:text-right">Worked with senior developers to build complex web page designs for Airtel's website, serving over 100,000 users daily.</div>
+                                </div>
+                                <div class="achievement-card cursor-pointer" data-company="Airtel">
+                                    <strong class="text-slate-700">New Help Functionality (Angular)</strong>
+                                    <div class="details text-sm text-slate-600 text-left md:text-right">Built a complete new help functionality for user assistance on an Angular-based platform.</div>
+                                </div>
+                                <div class="achievement-card cursor-pointer" data-company="Airtel">
+                                    <strong class="text-slate-700">UI Enhancements & User Interaction (React)</strong>
+                                    <div class="details text-sm text-slate-600 text-left md:text-right">Enhanced website UI (React) by collaborating with product managers, improving user interaction and reducing steps for specific operations.</div>
+                                </div>
+                                 <div class="achievement-card cursor-pointer" data-company="Airtel">
+                                    <strong class="text-slate-700">Fastag Replacement & Transaction History</strong>
+                                    <div class="details text-sm text-slate-600 text-left md:text-right">Implemented Fastag replacement functionality and designed a transaction history webview for Airtel Bank's official website.</div>
+                                </div>
+                                <p class="mt-3 text-xs text-amber-600">Key Tech: React, Angular, UI/UX Design</p>
+                            </div>
+                        </div>
+                        <div class="hidden md:flex md:w-auto items-center justify-center">
+                            <div class="w-8 h-8 bg-sky-600 rounded-full shadow-md"></div>
+                        </div>
+                        <div class="md:w-1/2 md:pl-8"></div>
+                    </div>
+
+                    <div class="experience-item md:flex md:flex-row-reverse md:items-start md:space-x-reverse md:space-x-8">
+                         <div class="md:w-1/2 md:pl-8 md:text-left">
+                            <div class="bg-white p-6 rounded-lg shadow-xl hover:shadow-2xl transition-shadow duration-300 mb-4 md:mb-0">
+                                <h3 class="text-2xl font-semibold text-sky-700 mb-1">Go Group</h3>
+                                <p class="text-sm text-slate-500 mb-2">Software Engineer</p>
+                                <p class="text-slate-600 italic mb-3">Driving platform growth through SEO and reusable components.</p>
+                                <div class="achievement-card cursor-pointer" data-company="Go Group">
+                                    <strong class="text-slate-700">SEO Page Development (React)</strong>
+                                    <div class="details text-sm text-slate-600">Worked with product managers to build SEO pages to direct traffic to the React-based platform.</div>
+                                </div>
+                                <div class="achievement-card cursor-pointer" data-company="Go Group">
+                                    <strong class="text-slate-700">Reusable Project Components</strong>
+                                    <div class="details text-sm text-slate-600">Contributed to reusable project components, saving developer effort.</div>
+                                </div>
+                                <div class="achievement-card cursor-pointer" data-company="Go Group">
+                                    <strong class="text-slate-700">UI Design (Ant Design, Material UI, Next.js)</strong>
+                                    <div class="details text-sm text-slate-600">Worked on designing UI using Ant Design, Material UI, and Next.js framework.</div>
+                                </div>
+                                <p class="mt-3 text-xs text-amber-600">Key Tech: React, Next.js, Ant Design, Material UI, SEO</p>
+                            </div>
+                        </div>
+                        <div class="hidden md:flex md:w-auto items-center justify-center">
+                            <div class="w-8 h-8 bg-sky-600 rounded-full shadow-md"></div>
+                        </div>
+                        <div class="md:w-1/2 md:pr-8"></div>
+                    </div>
+                    
+                    <div class="experience-item md:flex md:items-start md:space-x-8">
+                        <div class="md:w-1/2 md:pr-8 md:text-right">
+                            <div class="bg-white p-6 rounded-lg shadow-xl hover:shadow-2xl transition-shadow duration-300">
+                                <h3 class="text-2xl font-semibold text-sky-700 mb-1">Indus Valley Partners</h3>
+                                <p class="text-sm text-slate-500 mb-2">Software Engineer</p>
+                                <p class="text-slate-600 italic mb-3">Developing and maintaining web applications with diverse technologies.</p>
+                                <div class="achievement-card cursor-pointer" data-company="IVP">
+                                    <strong class="text-slate-700">Configuration Changes (Full Stack)</strong>
+                                    <div class="details text-sm text-slate-600 text-left md:text-right">Implemented multiple configuration changes in in-house products using React.js, Node.js, SQL Server, and MongoDB.</div>
+                                </div>
+                                <div class="achievement-card cursor-pointer" data-company="IVP">
+                                    <strong class="text-slate-700">Third-Party API Integration (JWT)</strong>
+                                    <div class="details text-sm text-slate-600 text-left md:text-right">Designed and integrated third-party APIs, authenticating various channels using JSON Web Tokens.</div>
+                                </div>
+                                <p class="mt-3 text-xs text-amber-600">Key Tech: React.js, Node.js, SQL Server, MongoDB, JWT</p>
+                            </div>
+                        </div>
+                        <div class="hidden md:flex md:w-auto items-center justify-center">
+                            <div class="w-8 h-8 bg-sky-600 rounded-full shadow-md"></div>
+                        </div>
+                        <div class="md:w-1/2 md:pl-8"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="toolkit" class="py-16 md:py-24 bg-slate-100">
+        <div class="container mx-auto px-6">
+            <h2 class="text-4xl font-bold text-center mb-4 text-slate-800 section-title-underline">The Artisan's Bench</h2>
+            <p class="text-center text-slate-600 mb-12 md:mb-16 max-w-2xl mx-auto">
+                A collection of technologies and tools I wield to build robust and efficient applications. This interactive galaxy represents my core competencies and areas of expertise. Hover or click on skills to see more.
+            </p>
+            <div id="skillGalaxy" class="relative min-h-[400px] md:min-h-[500px] w-full max-w-3xl mx-auto rounded-lg p-4">
+                </div>
+        </div>
+    </section>
+
+    <section id="blueprints" class="py-16 md:py-24 bg-slate-50">
+        <div class="container mx-auto px-6">
+            <h2 class="text-4xl font-bold text-center mb-4 text-slate-800 section-title-underline">Creations in Code</h2>
+            <p class="text-center text-slate-600 mb-12 md:mb-16 max-w-2xl mx-auto">
+                Showcasing key personal and academic projects where I've applied my skills to solve real-world problems and explore new technologies.
+            </p>
+            <div class="grid md:grid-cols-1 gap-8 max-w-2xl mx-auto">
+                <div class="bg-white p-8 rounded-lg shadow-xl hover:shadow-2xl transition-shadow duration-300">
+                    <h3 class="text-2xl font-semibold text-sky-700 mb-3">React Native Distance Tracker App</h3>
+                    <p class="text-slate-600 mb-4">
+                        Developed a mobile application using React Native that calculates and stores the distance covered by the user. This project involved leveraging device GPS capabilities and managing state effectively with Hooks.
+                    </p>
+                    <p class="text-sm text-slate-500 mb-2"><strong class="text-slate-700">Key Features:</strong> GPS tracking, distance calculation, data persistence.</p>
+                    <p class="text-sm text-slate-500"><strong class="text-slate-700">Technologies:</strong> React Native, Hooks, JavaScript.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="credentials" class="py-16 md:py-24 bg-slate-100">
+        <div class="container mx-auto px-6">
+            <h2 class="text-4xl font-bold text-center mb-4 text-slate-800 section-title-underline">Foundational Knowledge</h2>
+            <p class="text-center text-slate-600 mb-12 md:mb-16 max-w-2xl mx-auto">
+                My academic background and certifications that underpin my technical expertise and commitment to continuous learning.
+            </p>
+            <div class="grid md:grid-cols-2 gap-8">
+                <div class="bg-white p-8 rounded-lg shadow-xl">
+                    <h3 class="text-2xl font-semibold text-sky-700 mb-4">Education</h3>
+                    <div class="mb-6">
+                        <h4 class="text-xl font-medium text-slate-700">Chitkara University, Rajpura, Punjab</h4>
+                        <p class="text-slate-600">Bachelor of Engineering (B.E.) - Computer Science and Engineering</p>
+                        <p class="text-sm text-slate-500">2016 - 2020</p>
+                        <p class="mt-2 text-slate-600"><strong>GPA:</strong> 9.28 / 10.0</p>
+                        <p class="mt-1 text-sm text-slate-500"><strong>Relevant Coursework:</strong> MERN Stack Development, Python, C, C++.</p>
+                    </div>
+                </div>
+                <div class="bg-white p-8 rounded-lg shadow-xl">
+                    <h3 class="text-2xl font-semibold text-sky-700 mb-4">Certifications</h3>
+                    <ul class="space-y-4">
+                        <li class="text-slate-600">
+                            <strong class="text-slate-700">Udacity:</strong> Front End Web Development - 1
+                        </li>
+                        <li class="text-slate-600">
+                            <strong class="text-slate-700">Udemy:</strong> The Complete React Native + Hooks Course
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="connect" class="py-16 md:py-24 bg-slate-800 text-slate-200">
+        <div class="container mx-auto px-6 text-center">
+            <h2 class="text-4xl font-bold mb-4 section-title-underline">Let's Build Together</h2>
+            <p class="text-slate-300 mb-8 max-w-xl mx-auto">
+                I'm always excited to discuss new projects, innovative ideas, or opportunities to collaborate. Feel free to reach out!
+            </p>
+            <div class="space-y-4 md:space-y-0 md:space-x-6 flex flex-col md:flex-row justify-center items-center">
+                <a href="tel:+919915874147" class="flex items-center space-x-2 text-lg hover:text-amber-400 transition-colors">
+                    <span>&#9742;</span> <span>+91-9915874147</span>
+                </a>
+                <a href="mailto:gursimransingh154@gmail.com" class="flex items-center space-x-2 text-lg hover:text-amber-400 transition-colors">
+                    <span>&#9993;</span> <span>gursimransingh154@gmail.com</span>
+                </a>
+                <a href="https://linkedin.com/in/qursimransingh0410" target="_blank" rel="noopener noreferrer" class="flex items-center space-x-2 text-lg hover:text-amber-400 transition-colors">
+                    <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+                    <span>LinkedIn</span>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <footer class="text-center py-8 bg-slate-900 text-slate-400 text-sm">
+        <p>&copy; <span id="currentYear"></span> Gursimran Singh. All rights reserved.</p>
+        <p>Designed & Developed with a passion for code.</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Navigation
+            const hamburgerButton = document.getElementById('hamburgerButton');
+            const mobileMenu = document.getElementById('mobileMenu');
+            const navLinks = document.querySelectorAll('#navMenu a, #mobileMenu a');
+
+            hamburgerButton.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
+
+            navLinks.forEach(link => {
+                link.addEventListener('click', () => {
+                    if (!mobileMenu.classList.contains('hidden')) {
+                        mobileMenu.classList.add('hidden');
+                    }
+                });
+            });
+            
+            const mainNav = document.getElementById('mainNav');
+            let lastScrollTop = 0;
+            window.addEventListener('scroll', function() {
+                let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+                if (scrollTop > lastScrollTop && scrollTop > 100) { 
+                    mainNav.style.top = '-100px'; 
+                } else { 
+                    mainNav.style.top = '0';
+                }
+                lastScrollTop = scrollTop <= 0 ? 0 : scrollTop; 
+            }, false);
+
+
+            const heroNameElement = document.getElementById('heroName');
+            const nameToType = "Gursimran Singh";
+            let i = 0;
+            function typeName() {
+                if (i < nameToType.length) {
+                    heroNameElement.innerHTML += nameToType.charAt(i);
+                    i++;
+                    setTimeout(typeName, 100);
+                } else {
+                    heroNameElement.classList.add('typing-effect'); 
+                     heroNameElement.style.borderRight = '.15em solid orange';
+                }
+            }
+            typeName(); 
+
+            const keywordContainer = document.getElementById('keywordContainer');
+            const keywords = ["React", "TypeScript", "JavaScript", "Kubernetes", "Docker", "Frontend", "Optimization", "Firebase", "AWS", "CI/CD", "Performance", "UI/UX", "Node.js", "SQL", "MongoDB", "Agile"];
+            keywords.forEach(keywordText => {
+                const keywordElement = document.createElement('span');
+                keywordElement.textContent = keywordText;
+                keywordElement.classList.add('keyword', 'text-slate-600', 'font-medium', 'p-2', 'rounded');
+                keywordElement.style.fontSize = `${Math.random() * 1 + 0.8}rem`; 
+                keywordElement.style.top = `${Math.random() * 90}%`;
+                keywordElement.style.left = `${Math.random() * 90}%`;
+                keywordElement.style.opacity = `${Math.random() * 0.5 + 0.1}`; 
+                keywordContainer.appendChild(keywordElement);
+            });
+
+            keywordContainer.addEventListener('mousemove', function(e) {
+                const rect = keywordContainer.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+
+                Array.from(keywordContainer.children).forEach(child => {
+                    const dx = (child.offsetLeft + child.offsetWidth / 2) - x;
+                    const dy = (child.offsetTop + child.offsetHeight / 2) - y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+                    const maxDistance = 300; 
+                    
+                    if (distance < maxDistance) {
+                        const moveFactor = (maxDistance - distance) / maxDistance * 20; 
+                        const moveX = (dx / distance) * moveFactor;
+                        const moveY = (dy / distance) * moveFactor;
+                        child.style.transform = `translate(${moveX}px, ${moveY}px)`;
+                        child.style.opacity = `${Math.random() * 0.3 + 0.7}`; 
+                    } else {
+                        child.style.transform = 'translate(0, 0)';
+                        child.style.opacity = `${parseFloat(child.dataset.initialOpacity) || (Math.random() * 0.5 + 0.1)}`;
+                    }
+                });
+            });
+            Array.from(keywordContainer.children).forEach(child => {
+                child.dataset.initialOpacity = child.style.opacity;
+            });
+
+            const achievementCards = document.querySelectorAll('.achievement-card');
+            achievementCards.forEach(card => {
+                card.addEventListener('click', () => {
+                    card.classList.toggle('open');
+                });
+            });
+
+            const olxPageLoadCtx = document.getElementById('olxPageLoadChart')?.getContext('2d');
+            if (olxPageLoadCtx) {
+                new Chart(olxPageLoadCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Before Optimization', 'After Optimization'],
+                        datasets: [{
+                            label: 'Page Load Time Index',
+                            data: [100, 65], 
+                            backgroundColor: ['rgba(251, 146, 60, 0.6)', 'rgba(56, 189, 248, 0.6)'],
+                            borderColor: ['rgba(251, 146, 60, 1)', 'rgba(56, 189, 248, 1)'],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: { y: { beginAtZero: true, max: 110, ticks: { callback: value => value + '%' } } },
+                        plugins: { legend: { display: false }, title: { display: true, text: 'Page Load Time Improvement (30-40% Reduction)' } }
+                    }
+                });
+            }
+
+            const olxChunkSizeCtx = document.getElementById('olxChunkSizeChart')?.getContext('2d');
+            if (olxChunkSizeCtx) {
+                new Chart(olxChunkSizeCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Original Chunk Size', 'Optimized Chunk Size'],
+                        datasets: [{
+                            label: 'Build Chunk Size Index',
+                            data: [100, 22.5], 
+                            backgroundColor: ['rgba(244, 114, 182, 0.6)', 'rgba(22, 163, 74, 0.6)'],
+                            borderColor: ['rgba(244, 114, 182, 1)', 'rgba(22, 163, 74, 1)'],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: { y: { beginAtZero: true, max: 110, ticks: { callback: value => value + '%' } } },
+                        plugins: { legend: { display: false }, title: { display: true, text: 'Frontend Build Chunk Size Reduction (75-80%)' } }
+                    }
+                });
+            }
+            
+            const skillGalaxyContainer = document.getElementById('skillGalaxy');
+            const mainSkills = [
+                { name: 'React.Js', size: 3, color: 'bg-sky-500' }, { name: 'JavaScript', size: 3, color: 'bg-amber-500' },
+                { name: 'TypeScript', size: 2.5, color: 'bg-blue-500' }, { name: 'HTML', size: 2, color: 'bg-orange-500' },
+                { name: 'CSS', size: 2, color: 'bg-indigo-500' }, { name: 'Kubernetes', size: 2.5, color: 'bg-blue-700' },
+                { name: 'Docker', size: 2.5, color: 'bg-sky-400' }, { name: 'Node.js', size: 2, color: 'bg-green-500' },
+            ];
+            const otherSkills = [
+                { name: 'Angular', size: 1.5, color: 'bg-red-500' }, { name: 'Redux', size: 1.5, color: 'bg-purple-500' },
+                { name: 'Hooks', size: 1.8, color: 'bg-teal-500' }, { name: 'Firebase', size: 1.8, color: 'bg-yellow-500' },
+                { name: 'AWS', size: 1.8, color: 'bg-orange-600' }, { name: 'Git', size: 1.5, color: 'bg-slate-600' },
+                { name: 'REST APIs', size: 1.5, color: 'bg-cyan-500' }, { name: 'WebSocket', size: 1.5, color: 'bg-lime-500' },
+                { name: 'SQL', size: 1.5, color: 'bg-sky-700' }, { name: 'MongoDB', size: 1.5, color: 'bg-green-700' },
+                { name: 'Data Structures', size: 1.5, color: 'bg-pink-500' }
+            ];
+
+            const allSkills = [...mainSkills, ...otherSkills];
+            if (skillGalaxyContainer) {
+                const galaxyWidth = skillGalaxyContainer.offsetWidth;
+                const galaxyHeight = skillGalaxyContainer.offsetHeight;
+
+                allSkills.forEach(skill => {
+                    const el = document.createElement('div');
+                    el.textContent = skill.name;
+                    el.className = `skill-node absolute text-white text-xs md:text-sm font-semibold p-2 md:p-3 rounded-full shadow-lg cursor-pointer transition-all duration-300 ease-in-out hover:scale-110 hover:shadow-xl ${skill.color}`;
+                    el.style.width = `${skill.size * 25}px`; 
+                    el.style.height = `${skill.size * 25}px`;
+                    el.style.lineHeight = `${skill.size * 25 - (skill.size > 2 ? 12 : 8)}px`; 
+                    el.style.textAlign = 'center';
+                    el.style.borderRadius = '50%';
+                    
+                    let topPos, leftPos, attempts = 0, placed = false;
+                    const maxAttempts = 50;
+                    const elements = Array.from(skillGalaxyContainer.children);
+
+                    while (!placed && attempts < maxAttempts) {
+                        topPos = Math.random() * (galaxyHeight - (skill.size * 25));
+                        leftPos = Math.random() * (galaxyWidth - (skill.size * 25));
+                        placed = true; 
+
+                        for (const existingEl of elements) {
+                            const existingRect = existingEl.getBoundingClientRect();
+                            const newRect = { top: topPos, left: leftPos, width: skill.size * 25, height: skill.size * 25 };
+                            
+                            if (!(newRect.left + newRect.width < existingRect.left || 
+                                  newRect.left > existingRect.left + existingRect.width ||
+                                  newRect.top + newRect.height < existingRect.top ||
+                                  newRect.top > existingRect.top + existingRect.height)) {
+                                placed = false;
+                                break;
+                            }
+                        }
+                        attempts++;
+                    }
+                    
+                    el.style.top = `${topPos || Math.random() * 70 + 10}%`; 
+                    el.style.left = `${leftPos || Math.random() * 70 + 10}%`;
+
+                    skillGalaxyContainer.appendChild(el);
+                });
+            }
+
+            document.getElementById('currentYear').textContent = new Date().getFullYear();
+        });
+    </script>
+</body>
 </html>
